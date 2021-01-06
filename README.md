@@ -7,15 +7,18 @@ IN PROGRESS
 
 Reactive columns for data frames\!
 
-Follow the twitter thread here :
+Original twitter thread here :
 <https://twitter.com/antoine_fabri/status/1346421382981283840>
+
+New thread:
+<https://twitter.com/antoine_fabri/status/1346839934783643652>
 
 ## Installation
 
 Install with:
 
 ``` r
-remotes::("moodymudskipper/reactibble")
+remotes::install_github("moodymudskipper/reactibble")
 ```
 
 ## Example
@@ -61,36 +64,36 @@ rt
 #> # A tibble: 3 x 3
 #>   height weight bmi      
 #>    <dbl>  <dbl> <~dbl>   
-#> 1   1.96      7  1.818747
-#> 2   1.77     82 26.282112
-#> 3   1.98     68 17.305198
+#> 1   1.59      7  2.758495
+#> 2   1.69     82 28.853924
+#> 3   1.68     68 24.124361
 
 rt[1] <- runif(3, 1.5, 2)
 rt
 #> # A tibble: 3 x 3
 #>   height weight bmi      
 #>    <dbl>  <dbl> <~dbl>   
-#> 1   1.78      7  2.208189
-#> 2   1.87     82 23.531816
-#> 3   1.87     68 19.520299
+#> 1   1.91      7  1.920707
+#> 2   1.86     82 23.634968
+#> 3   1.81     68 20.814870
 
 rt$height <- runif(3, 1.5, 2)
 rt
 #> # A tibble: 3 x 3
 #>   height weight bmi      
 #>    <dbl>  <dbl> <~dbl>   
-#> 1   1.69      7  2.458935
-#> 2   1.92     82 22.155712
-#> 3   1.88     68 19.301707
+#> 1   1.59      7  2.766004
+#> 2   1.57     82 33.297369
+#> 3   1.96     68 17.634890
 
 rt <- within(rt, height <- runif(3, 1.5, 2))
 rt
 #> # A tibble: 3 x 3
 #>   height weight bmi      
 #>    <dbl>  <dbl> <~dbl>   
-#> 1   1.52      7  3.047258
-#> 2   1.51     82 35.922420
-#> 3   1.90     68 18.905873
+#> 1   1.98      7  1.777496
+#> 2   1.95     82 21.555442
+#> 3   1.92     68 18.490269
 ```
 
 We can add other reactive columns by using `mutate` with `~`, we’ll need
@@ -106,9 +109,9 @@ mutate(
 #> # A tibble: 3 x 4
 #>   height weight bmi       height_cm
 #>    <dbl>  <dbl> <~dbl>    <~dbl>   
-#> 1   1.65      7  2.576127 164.8410 
-#> 2   1.77     82 26.282194 176.6347 
-#> 3   1.81     68 20.852501 180.5824
+#> 1   1.87      7  2.006236 186.7919 
+#> 2   1.57     82 33.148080 157.2815 
+#> 3   1.74     68 22.482970 173.9112
 ```
 
 ## Notes
