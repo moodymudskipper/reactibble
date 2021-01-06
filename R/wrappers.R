@@ -97,3 +97,6 @@ as.data.table.reactibble <- function(x, keep.rownames = FALSE, ...) {
   x[] <- lapply(x, strip_reactive_col)
   NextMethod()
 }
+
+# to avoid error with devtools::load_all()
+as.data.table <- NULL
