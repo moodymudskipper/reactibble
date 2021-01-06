@@ -33,6 +33,11 @@ remotes::install_github("moodymudskipper/reactibble")
 
 ## Example
 
+```{r, include= FALSE}
+set.seed(1)
+```
+
+
 `reactibble()` works like `tibble()` except we can define reactive columns by
 using `~`:
 
