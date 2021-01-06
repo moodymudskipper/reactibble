@@ -1,8 +1,19 @@
+
+#' Convert to a reactibble object
+#' @param x A data frame, list, matrix, or other object that could reasonably be coerced to a tibble.
+#'
+#' @export
+is_reactibble <- function(x) {
+  inherits(x, "reactibble")
+}
+
+
 #' Convert to a reactibble object
 #' @param x A data frame, list, matrix, or other object that could reasonably be coerced to a tibble.
 #'
 #' @export
 as_reactibble <- function(x) {
+  if(is_reactibble(x)) return(x)
   x <- tibble::as_tibble(x)
   class(x) <- union("reactibble", class(x))
   x
@@ -56,4 +67,16 @@ strip_reactive_col <- function(x) {
   class(x) <- cl
   attr(x, "expr") <- NULL
   x
+}
+
+#' @export
+materialize <- function(x, ...) {
+  x <- strip_reactibble_class(x)
+  if (! ...length()) {
+    x[] <- lapply(x, strip_reactive_col)
+  } else {
+    cols <- sapply(eval(substitute(alist(...))), deparse1)
+    x[cols] <- lapply(x[cols], strip_reactive_col)
+  }
+  as_reactibble(x)
 }
