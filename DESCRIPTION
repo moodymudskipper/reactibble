@@ -1,0 +1,20 @@
+Package: reactibble
+Title: Use Dynamic Columns in Data Frames
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Antoine",
+           family = "Fabri",
+           role = c("aut", "cre"),
+           email = "antoine.fabri@gmail.com")
+Description: Use dynamic columns in data frames.
+License: GPL-3
+Encoding: UTF-8
+Language: en
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Imports: 
+    tibble,
+    dplyr,
+    rlang,
+    pillar

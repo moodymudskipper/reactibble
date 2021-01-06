@@ -1,0 +1,88 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# reactibble
+
+IN PROGRESS
+
+Reactive columns for data frames! 
+
+Follow the twitter thread here : https://twitter.com/antoine_fabri/status/1346421382981283840
+
+## Installation
+
+Install with:
+
+``` r
+remotes::("moodymudskipper/reactibble")
+```
+
+## Example
+
+`reactibble()` works like `tibble()` except we can define reactive columns by
+using `~`:
+
+```{r}
+library(reactibble)
+rt <- reactibble(
+  height = c(150, 172, 164),
+  weight = c(7, 82, 68),
+  bmi = ~ weight / height^2
+)
+```
+
+Oops, height was in the wrong unit, we correct it, bmi is corrected as well:
+
+```{r}
+rt <- transform(rt, height = height/100)
+rt
+```
+
+It is robust to other ways to change values
+
+```{r}
+rt[[1]] <- runif(3, 1.5, 2)
+rt
+
+rt[1] <- runif(3, 1.5, 2)
+rt
+
+rt$height <- runif(3, 1.5, 2)
+rt
+
+rt <- within(rt, height <- runif(3, 1.5, 2))
+rt
+```
+
+We can add other reactive columns by using `mutate` with `~`, we'll need to
+attach *{dplyr}* :
+
+```{r}
+library(dplyr, warn.conflicts = FALSE)
+mutate(
+  rt, 
+  height_cm = ~ 100 * height, 
+  height = runif(3, 1.5, 2)
+  )
+```
+
+
+## Notes
+
+* If for some reason a reactibble is out of sync, call `refresh(rt)` (and post an issue :)).
+* If you want to disable autorefresh, maybe because your columns are expensive to recompute, set `options(reactibble.autorefresh = FALSE)`.
+* At the moment (and maybe forever), only `mutate` can create new reactive columns, so you can't do things like `rt$var <- ~ expr`.
+* At the moment if you rename columns used by reactive columns, you will break your
+reactibble. This will hopefully be solved.
