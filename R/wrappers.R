@@ -55,3 +55,17 @@ within.reactibble <- function (data, expr, ...) {
   }
   as_reactibble(x)
 }
+
+#' @export
+`names<-.reactibble` <- function(x, value) {
+  x <- strip_reactibble_class(x)
+  # renaming arg for `substitute`
+  args <- setNames(lapply(value, as.symbol), names(x))
+  for (i in seq_along(x)) {
+    if(inherits(x[[i]], "reactive_col")) {
+      attr(x[[i]], "expr") <- do.call(substitute, c(list(attr(x[[i]], "expr"), args)))
+    }
+  }
+  names(x) <- value
+  as_reactibble(x)
+}
