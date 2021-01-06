@@ -8,7 +8,6 @@ as_reactibble <- function(x) {
   x
 }
 
-
 #' Build a reactibble object
 #' @param ... A set of name-value pairs, use `~` to define a reactive column
 #'
@@ -46,5 +45,15 @@ reactibble <- function(...) {
 
 strip_reactibble_class <- function(x) {
   class(x) <- setdiff(class(x), "reactibble")
+  x
+}
+
+strip_reactive_col <- function(x) {
+  cl<- class(x)
+  cl <- setdiff(cl, "reactive_col")
+  # this is a hack, come back here once we have a proper printing method
+  cl <- cl[!startsWith(cl, "~")]
+  class(x) <- cl
+  attr(x, "expr") <- NULL
   x
 }
