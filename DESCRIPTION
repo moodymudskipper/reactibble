@@ -18,3 +18,5 @@ Imports:
     dplyr,
     rlang,
     pillar
+URL: https://github.com/moodymudskipper/reactibble
+BugReports: https://github.com/moodymudskipper/reactibble/issues
