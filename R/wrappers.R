@@ -44,3 +44,14 @@ within.reactibble <- function (data, expr, ...) {
   }
   as_reactibble(x)
 }
+
+
+#' @export
+`[.reactibble` <- function(x, ...){
+  x <- strip_reactibble_class(x)
+  x <- x[...]
+  if(getOption("reactibble.autorefresh")) {
+    x <- refresh(x)
+  }
+  as_reactibble(x)
+}
