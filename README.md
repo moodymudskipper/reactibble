@@ -116,12 +116,12 @@ mutate(
 
 ## Notes
 
-  - If for some reason a reactibble is out of sync, call `refresh(rt)`
-    (and post an issue :)).
+  - If for some reason a reactibble is out of sync, call `rt <-
+    refresh(rt)` (and post an issue :)).
   - If you want to disable autorefresh, maybe because your columns are
     expensive to recompute, set `options(reactibble.autorefresh =
     FALSE)`.
   - At the moment (and maybe forever), only `mutate` can create new
     reactive columns, so you can’t do things like `rt$var <- ~ expr`.
-  - At the moment if you rename columns used by reactive columns, you
-    will break your reactibble. This will hopefully be solved.
+  - Dropping a column used by a formula triggers an explicit error
+  - Renaming a column updates the formulas so they use the new name
