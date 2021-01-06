@@ -19,14 +19,16 @@ IN PROGRESS
 
 Reactive columns for data frames! 
 
-Follow the twitter thread here : https://twitter.com/antoine_fabri/status/1346421382981283840
+Original twitter thread here : https://twitter.com/antoine_fabri/status/1346421382981283840
+
+New thread: https://twitter.com/antoine_fabri/status/1346839934783643652
 
 ## Installation
 
 Install with:
 
 ``` r
-remotes::("moodymudskipper/reactibble")
+remotes::install_github("moodymudskipper/reactibble")
 ```
 
 ## Example
