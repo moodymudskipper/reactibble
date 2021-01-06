@@ -41,6 +41,7 @@ rt <- reactibble(
   weight = c(7, 82, 68),
   bmi = ~ weight / height^2
 )
+rt
 ```
 
 Oops, height was in the wrong unit, we correct it, bmi is corrected as well:
