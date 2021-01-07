@@ -38,8 +38,8 @@ rt
 #>   height weight      bmi
 #>    <dbl>  <dbl>   <~dbl>
 #> 1    150      7 0.000311
-#> 2    172     82 0.000311
-#> 3    164     68 0.000311
+#> 2    172     82 0.00277 
+#> 3    164     68 0.00253
 ```
 
 Oops, height was in the wrong unit, we correct it, bmi is corrected as
@@ -52,8 +52,8 @@ rt
 #>   height weight    bmi
 #>    <dbl>  <dbl> <~dbl>
 #> 1   1.5       7   3.11
-#> 2   1.72     82   3.11
-#> 3   1.64     68   3.11
+#> 2   1.72     82  27.7 
+#> 3   1.64     68  25.3
 ```
 
 It is robust to other ways to change values
@@ -65,8 +65,8 @@ rt
 #>   height weight    bmi
 #>    <dbl>  <dbl> <~dbl>
 #> 1   1.63      7   2.63
-#> 2   1.69     82   2.63
-#> 3   1.79     68   2.63
+#> 2   1.69     82  28.8 
+#> 3   1.79     68  21.3
 
 rt[1] <- runif(3, 1.5, 2)
 rt
@@ -74,8 +74,8 @@ rt
 #>   height weight    bmi
 #>    <dbl>  <dbl> <~dbl>
 #> 1   1.95      7   1.83
-#> 2   1.60     82   1.83
-#> 3   1.95     68   1.83
+#> 2   1.60     82  32.0 
+#> 3   1.95     68  17.9
 
 rt$height <- runif(3, 1.5, 2)
 rt
@@ -83,8 +83,8 @@ rt
 #>   height weight    bmi
 #>    <dbl>  <dbl> <~dbl>
 #> 1   1.97      7   1.80
-#> 2   1.83     82   1.80
-#> 3   1.81     68   1.80
+#> 2   1.83     82  24.5 
+#> 3   1.81     68  20.7
 
 rt <- within(rt, height <- runif(3, 1.5, 2))
 rt
@@ -92,8 +92,8 @@ rt
 #>   height weight    bmi
 #>    <dbl>  <dbl> <~dbl>
 #> 1   1.53      7   2.99
-#> 2   1.60     82   2.99
-#> 3   1.59     68   2.99
+#> 2   1.60     82  31.9 
+#> 3   1.59     68  27.0
 ```
 
 We can add other reactive columns by using `mutate` with `~`, we’ll need
@@ -110,8 +110,8 @@ mutate(
 #>   height weight    bmi height_cm
 #>    <dbl>  <dbl> <~dbl>    <~dbl>
 #> 1   1.84      7   2.06      184.
-#> 2   1.69     82   2.06      184.
-#> 3   1.88     68   2.06      184.
+#> 2   1.69     82  28.6       169.
+#> 3   1.88     68  19.1       188.
 ```
 
 ## Notes

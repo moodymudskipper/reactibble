@@ -29,7 +29,7 @@
 
 #' @export
 transform.reactibble <- function (`_data`, ...) {
-  cl <- class(x)
+  cl <- class(`_data`)
   x <- strip_reactibble_class(`_data`)
   x <- transform(x, ...)
   if(getOption("reactibble.autorefresh")) {
@@ -41,7 +41,7 @@ transform.reactibble <- function (`_data`, ...) {
 
 #' @export
 within.reactibble <- function (data, expr, ...) {
-  cl <- class(x)
+  cl <- class(data)
   x <- strip_reactibble_class(data)
   x <- eval.parent(substitute(within(x, expr, ...)))
   if(getOption("reactibble.autorefresh")) {
