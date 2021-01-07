@@ -22,12 +22,8 @@ mutate.reactibble <- function(.data, ...) {
   }
   res <- dplyr::mutate(strip_reactibble_class(.data), !!!dots)
   for(i in seq_along(inds)) {
+    class(res[[nms[i]]]) <- union("reactive_col", class(res[[nms[i]]]))
     attr(res[[nms[i]]],"expr") <- exprs[[i]]
-    # creating a class just for display is messy, should be handled by using
-    # pillar and tibble in the print method
-    class(res[[nms[i]]]) <-
-      c(paste0("~",pillar::type_sum(res[[nms[i]]])),
-        "reactive_col", class(res[[nms[i]]]))
   }
   if(getOption("reactibble.autorefresh")) {
     res <- refresh(res)
@@ -54,12 +50,8 @@ transmute.reactibble <- function(.data, ...) {
   }
   res <- dplyr::transmute(strip_reactibble_class(.data), !!!dots)
   for(i in seq_along(inds)) {
+    class(res[[nms[i]]]) <- union("reactive_col", class(res[[nms[i]]]))
     attr(res[[nms[i]]],"expr") <- exprs[[i]]
-    # creating a class just for display is messy, should be handled by using
-    # pillar and tibble in the print method
-    class(res[[nms[i]]]) <-
-      c(paste0("~",pillar::type_sum(res[[nms[i]]])),
-        "reactive_col", class(res[[nms[i]]]))
   }
   if(getOption("reactibble.autorefresh")) {
     res <- refresh(res)

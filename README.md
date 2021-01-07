@@ -34,12 +34,12 @@ rt <- reactibble(
   bmi = ~ weight / height^2
 )
 rt
-#> # A tibble: 3 x 3
-#>   height weight bmi         
-#>    <dbl>  <dbl> <~dbl>      
-#> 1    150      7 0.0003111111
-#> 2    172     82 0.0027717685
-#> 3    164     68 0.0025282570
+#> # A reactibble: 3 x 3
+#>   height weight      bmi
+#>    <dbl>  <dbl>   <~dbl>
+#> 1    150      7 0.000311
+#> 2    172     82 0.000311
+#> 3    164     68 0.000311
 ```
 
 Oops, height was in the wrong unit, we correct it, bmi is corrected as
@@ -48,12 +48,12 @@ well:
 ``` r
 rt <- transform(rt, height = height/100)
 rt
-#> # A tibble: 3 x 3
-#>   height weight bmi      
-#>    <dbl>  <dbl> <~dbl>   
-#> 1   1.5       7  3.111111
-#> 2   1.72     82 27.717685
-#> 3   1.64     68 25.282570
+#> # A reactibble: 3 x 3
+#>   height weight    bmi
+#>    <dbl>  <dbl> <~dbl>
+#> 1   1.5       7   3.11
+#> 2   1.72     82   3.11
+#> 3   1.64     68   3.11
 ```
 
 It is robust to other ways to change values
@@ -61,39 +61,39 @@ It is robust to other ways to change values
 ``` r
 rt[[1]] <- runif(3, 1.5, 2)
 rt
-#> # A tibble: 3 x 3
-#>   height weight bmi      
-#>    <dbl>  <dbl> <~dbl>   
-#> 1   1.63      7  2.625768
-#> 2   1.69     82 28.844751
-#> 3   1.79     68 21.307795
+#> # A reactibble: 3 x 3
+#>   height weight    bmi
+#>    <dbl>  <dbl> <~dbl>
+#> 1   1.63      7   2.63
+#> 2   1.69     82   2.63
+#> 3   1.79     68   2.63
 
 rt[1] <- runif(3, 1.5, 2)
 rt
-#> # A tibble: 3 x 3
-#>   height weight bmi      
-#>    <dbl>  <dbl> <~dbl>   
-#> 1   1.95      7  2.625768
-#> 2   1.60     82 28.844751
-#> 3   1.95     68 21.307795
+#> # A reactibble: 3 x 3
+#>   height weight    bmi
+#>    <dbl>  <dbl> <~dbl>
+#> 1   1.95      7   1.83
+#> 2   1.60     82   1.83
+#> 3   1.95     68   1.83
 
 rt$height <- runif(3, 1.5, 2)
 rt
-#> # A tibble: 3 x 3
-#>   height weight bmi      
-#>    <dbl>  <dbl> <~dbl>   
-#> 1   1.97      7  1.799432
-#> 2   1.83     82 24.474981
-#> 3   1.81     68 20.652264
+#> # A reactibble: 3 x 3
+#>   height weight    bmi
+#>    <dbl>  <dbl> <~dbl>
+#> 1   1.97      7   1.80
+#> 2   1.83     82   1.80
+#> 3   1.81     68   1.80
 
 rt <- within(rt, height <- runif(3, 1.5, 2))
 rt
-#> # A tibble: 3 x 3
-#>   height weight bmi      
-#>    <dbl>  <dbl> <~dbl>   
-#> 1   1.53      7  2.986815
-#> 2   1.60     82 31.911976
-#> 3   1.59     68 26.956014
+#> # A reactibble: 3 x 3
+#>   height weight    bmi
+#>    <dbl>  <dbl> <~dbl>
+#> 1   1.53      7   2.99
+#> 2   1.60     82   2.99
+#> 3   1.59     68   2.99
 ```
 
 We can add other reactive columns by using `mutate` with `~`, we’ll need
@@ -106,12 +106,12 @@ mutate(
   height_cm = ~ 100 * height, 
   height = runif(3, 1.5, 2)
   )
-#> # A tibble: 3 x 4
-#>   height weight bmi       height_cm
-#>    <dbl>  <dbl> <~dbl>    <~dbl>   
-#> 1   1.84      7  2.059711 184.3511 
-#> 2   1.69     82 28.640890 169.2052 
-#> 3   1.88     68 19.139154 188.4921
+#> # A reactibble: 3 x 4
+#>   height weight    bmi height_cm
+#>    <dbl>  <dbl> <~dbl>    <~dbl>
+#> 1   1.84      7   2.06      184.
+#> 2   1.69     82   2.06      184.
+#> 3   1.88     68   2.06      184.
 ```
 
 ## Notes

@@ -13,7 +13,9 @@ is_reactibble <- function(x) {
 #'
 #' @export
 as_reactibble <- function(x) {
-  if(is_reactibble(x)) return(x)
+  if(is_reactibble(x)) {
+    class(x) <- c("reactibble", "tbl_df", "tbl", "data.frame")
+  }
   x <- tibble::as_tibble(x)
   class(x) <- union("reactibble", class(x))
   x
@@ -41,12 +43,8 @@ reactibble <- function(...) {
   }
   res <- dplyr::tibble(!!!dots)
   for(i in seq_along(inds)) {
+    class(res[[nms[i]]]) <- union("reactive_col", class(res[[nms[i]]]))
     attr(res[[nms[i]]],"expr") <- exprs[[i]]
-    # creating a class just for display is messy, should be handled by using
-    # pillar and tibble in the print method
-    class(res[[nms[i]]]) <-
-      c(paste0("~",pillar::type_sum(res[[nms[i]]])),
-        "reactive_col", class(res[[nms[i]]]))
   }
   if(getOption("reactibble.autorefresh")) {
     res <- refresh(res)
@@ -60,15 +58,22 @@ strip_reactibble_class <- function(x) {
 }
 
 strip_reactive_col <- function(x) {
-  cl<- class(x)
-  cl <- setdiff(cl, "reactive_col")
-  # this is a hack, come back here once we have a proper printing method
-  cl <- cl[!startsWith(cl, "~")]
-  class(x) <- cl
-  attr(x, "expr") <- NULL
-  x
+  if(inherits(x, "reactive_col"))
+    unclass(x)[[1]]
+  else
+    x
+  # class(x) <- setdiff(class(x), "reactive_col")
+  # attr(x, "expr") <- NULL
+  # x
 }
 
+#' convert reactive columns to static columns
+#'
+#' If no column names are provided, the full reactibble is materialized. The
+#' class "reactibble" is preserved.
+#'
+#' @param  x a reactibble object
+#' @param ... bare column names
 #' @export
 materialize <- function(x, ...) {
   x <- strip_reactibble_class(x)

@@ -17,7 +17,9 @@ Imports:
     tibble,
     dplyr,
     rlang,
-    pillar
+    pillar,
+    vctrs,
+    cli
 Suggests:
     data.table
 URL: https://github.com/moodymudskipper/reactibble

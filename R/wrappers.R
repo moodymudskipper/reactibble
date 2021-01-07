@@ -17,47 +17,57 @@
 
 #' @export
 `[<-.reactibble` <- function(x, ..., value) {
+  cl <- class(x)
   x <- strip_reactibble_class(x)
   x[...] <- value
   if(getOption("reactibble.autorefresh")) {
     x <- refresh(x)
   }
-  as_reactibble(x)
+  class(x) <- cl
+  x
 }
 
 #' @export
 transform.reactibble <- function (`_data`, ...) {
+  cl <- class(x)
   x <- strip_reactibble_class(`_data`)
   x <- transform(x, ...)
   if(getOption("reactibble.autorefresh")) {
     x <- refresh(x)
   }
-  as_reactibble(x)
+  class(x) <- cl
+  x
 }
 
 #' @export
 within.reactibble <- function (data, expr, ...) {
+  cl <- class(x)
   x <- strip_reactibble_class(data)
   x <- eval.parent(substitute(within(x, expr, ...)))
   if(getOption("reactibble.autorefresh")) {
     x <- refresh(x)
   }
-  as_reactibble(x)
+  class(x) <- cl
+  x
 }
 
 
 #' @export
 `[.reactibble` <- function(x, ...){
+  cl <- class(x)
   x <- strip_reactibble_class(x)
   x <- x[...]
   if(getOption("reactibble.autorefresh")) {
     x <- refresh(x)
   }
-  as_reactibble(x)
+  class(x) <- cl
+  x
 }
 
 #' @export
+#' @importFrom stats setNames
 `names<-.reactibble` <- function(x, value) {
+  cl <- class(x)
   x <- strip_reactibble_class(x)
   # renaming arg for `substitute`
   args <- setNames(lapply(value, as.symbol), names(x))
@@ -67,7 +77,8 @@ within.reactibble <- function (data, expr, ...) {
     }
   }
   names(x) <- value
-  as_reactibble(x)
+  class(x) <- cl
+  x
 }
 
 #' @export
@@ -79,6 +90,13 @@ as.data.frame.reactibble <- function(
   NextMethod()
 }
 
+#' Convert to tibble
+#'
+#' @param x react tibble object
+#' @param ... forwarded to tibble::as_tibble
+#' @param .rows forwarded to tibble::as_tibble
+#' @param .name_repair Treatment of problematic column names
+#' @param rownames rownames How to treat existing row names of a data frame or matrix
 #' @export
 as_tibble.reactibble <- function(
   x, ..., .rows = NULL,

@@ -1,4 +1,5 @@
 refresh <- function(x) {
+  #message("refreshing")
   call <- sys.call()
   pf <- parent.frame()
   for(i in seq_along(x)) {
@@ -14,10 +15,8 @@ refresh <- function(x) {
         e$call <- call
         stop(e)
       })
+      class(x[[i]]) <- union("reactive_col", class(x[[i]]))
       attr(x[[i]],"expr") <- expr
-      class(x[[i]]) <-
-        unique(c(paste0("~", pillar::type_sum(x[[i]])),
-          "reactive_col", class(x[[i]])))
     }
   }
   x
