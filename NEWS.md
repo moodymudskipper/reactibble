@@ -8,3 +8,4 @@
   which convert the reactibble to a static object and clean up the classes and
   attributes of reactive columns
 * implemented is_reactibble, and materialize
+* implemented a proper printing method 

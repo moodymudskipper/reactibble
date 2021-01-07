@@ -58,13 +58,9 @@ strip_reactibble_class <- function(x) {
 }
 
 strip_reactive_col <- function(x) {
-  if(inherits(x, "reactive_col"))
-    unclass(x)[[1]]
-  else
-    x
-  # class(x) <- setdiff(class(x), "reactive_col")
-  # attr(x, "expr") <- NULL
-  # x
+  class(x) <- setdiff(class(x), "reactive_col")
+  attr(x, "expr") <- NULL
+  x
 }
 
 #' convert reactive columns to static columns

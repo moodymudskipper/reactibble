@@ -27,7 +27,7 @@ tbl_sum.reactibble <- function (x){
 #' @export
 #' @rdname methods
 vec_ptype_abbr.reactive_col <- function(x) {
-  paste0("~", pillar::type_sum(unclass(x)[[1]]))
+  paste0("~", pillar::type_sum(strip_reactive_col(x)))
 }
 
 #' @inheritParams pillar::pillar_shaft
@@ -35,5 +35,5 @@ vec_ptype_abbr.reactive_col <- function(x) {
 #' @rdname methods
 pillar_shaft.reactive_col <- function(x, ...) {
   # to use the format of the original class
-  pillar::pillar_shaft(unclass(x)[[1]], ...)
+  pillar::pillar_shaft(strip_reactive_col(x), ...)
 }
