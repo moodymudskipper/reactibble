@@ -1,18 +1,13 @@
 #' @export
 print.reactibble <- function(x, ..., n = NULL, width = NULL, n_extra = NULL) {
-  # tibble:::format.tbl calls trunc_mat which calls as.data.frame,
-  # but our as.data.frame method removes reactive columns, so we add a class
-  x_classed <- x
-  class(x_classed) <- c("printable_reactibble", class(x))
-  txt <- format(x_classed, ..., n = n, width = width, n_extra = n_extra)
-  txt <- gsub("\033\\[3m\033\\[38;5;246m<~(.*?)>\033\\[39m\033\\[23m",
-       "\033[31m<~\\1>\033[39m", txt)
+  txt <- format(x, ..., n = n, width = width, n_extra = n_extra)
+  # txt <- gsub("\033\\[3m\033\\[38;5;246m<~(.*?)>\033\\[39m\033\\[23m",
+  #      "\033[31m<~\\1>\033[39m", txt)
+  txt <- gsub("\033\\[3m\033\\[90m<~(.*?)>\033\\[39m\033\\[23m",
+              "\033[31m<~\\1>\033[39m", txt)
   cli::cat_line(txt)
   invisible(x)
 }
-
-#' @export
-as.data.frame.printable_reactibble <- as.data.frame.data.frame
 
 #' @inheritParams tibble::tbl_sum
 #' @export

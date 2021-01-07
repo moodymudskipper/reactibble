@@ -1,15 +1,15 @@
 .onLoad <- function(...) {
   registerS3method("mutate", "reactibble", mutate.reactibble, asNamespace("dplyr"))
   registerS3method("transmute", "reactibble", transmute.reactibble, asNamespace("dplyr"))
-  registerS3method("as_tibble", "reactibble", as_tibble.reactibble, asNamespace("tibble"))
+  #registerS3method("as_tibble", "reactibble", as_tibble.reactibble, asNamespace("tibble"))
   registerS3method("vec_ptype_abbr", "reactive_col", vec_ptype_abbr.reactive_col, asNamespace("vctrs"))
   registerS3method("pillar_shaft", "reactive_col", pillar_shaft.reactive_col, asNamespace("pillar"))
   registerS3method("tbl_sum", "reactibble", tbl_sum.reactibble, asNamespace("tibble"))
 
-  setHook(packageEvent("data.table", "onLoad"), function(...) {
-          registerS3method(
-            "as.data.table", "reactibble",
-            as.data.table.reactibble, asNamespace("data.table"))})
+  # setHook(packageEvent("data.table", "onLoad"), function(...) {
+  #         registerS3method(
+  #           "as.data.table", "reactibble",
+  #           as.data.table.reactibble, asNamespace("data.table"))})
 
   op <- options()
   op.reactibble <- list(

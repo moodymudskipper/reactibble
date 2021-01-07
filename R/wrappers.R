@@ -81,40 +81,41 @@ within.reactibble <- function (data, expr, ...) {
   x
 }
 
-#' @export
-#' @method as.data.frame reactibble
-as.data.frame.reactibble <- function(
-  x, row.names = NULL, optional = FALSE, ...) {
-  x <- strip_reactibble_class(x)
-  x[] <- lapply(x, strip_reactive_col)
-  NextMethod()
-}
-
-#' Convert to tibble
-#'
-#' @param x react tibble object
-#' @param ... forwarded to tibble::as_tibble
-#' @param .rows forwarded to tibble::as_tibble
-#' @param .name_repair Treatment of problematic column names
-#' @param rownames rownames How to treat existing row names of a data frame or matrix
-#' @export
-as_tibble.reactibble <- function(
-  x, ..., .rows = NULL,
-  .name_repair = c("check_unique",  "unique", "universal", "minimal"),
-  rownames = pkgconfig::get_config("tibble::rownames", NULL)) {
-  x <- strip_reactibble_class(x)
-  x[] <- lapply(x, strip_reactive_col)
-  NextMethod()
-}
-
-
-#' @export
-#' @method as.data.table reactibble
-as.data.table.reactibble <- function(x, keep.rownames = FALSE, ...) {
-  x <- strip_reactibble_class(x)
-  x[] <- lapply(x, strip_reactive_col)
-  NextMethod()
-}
-
-# to avoid error with devtools::load_all()
-as.data.table <- NULL
+# #' @export
+# #' @method as.data.frame reactibble
+# as.data.frame.reactibble <- function(
+#   x, row.names = NULL, optional = FALSE, ...) {
+#   x <- strip_reactibble_class(x)
+#   x[] <- lapply(x, strip_reactive_col)
+#   NextMethod()
+# }
+#
+# #' Convert to tibble
+# #'
+# #' @param x react tibble object
+# #' @param ... forwarded to tibble::as_tibble
+# #' @param .rows forwarded to tibble::as_tibble
+# #' @param .name_repair Treatment of problematic column names
+# #' @param rownames rownames How to treat existing row names of a data frame or matrix
+# #' @export
+# as_tibble.reactibble <- function(
+#   x, ..., .rows = NULL,
+#   .name_repair = c("check_unique",  "unique", "universal", "minimal"),
+#   rownames = pkgconfig::get_config("tibble::rownames", NULL)) {
+#   x <- strip_reactibble_class(x)
+#   x[] <- lapply(x, strip_reactive_col)
+#   NextMethod()
+# }
+#
+#
+# #' @export
+# #' @method as.data.table reactibble
+# as.data.table.reactibble <- function(x, keep.rownames = FALSE, ...) {
+#   x <- strip_reactibble_class(x)
+#   x[] <- lapply(x, strip_reactive_col)
+#   NextMethod()
+# }
+#
+# # to avoid error with devtools::load_all()
+# as.data.table <- NULL
+#
