@@ -36,7 +36,7 @@ refresh.data.frame <- function(x) {
       }
     }
     if(identical(unrefreshed, unrefreshed_bkp)) {
-      stop("The definition of reactive is circular")
+      stop("The definition of reactive columns is circular")
     }
   }
   x
