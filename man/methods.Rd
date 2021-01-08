@@ -4,7 +4,7 @@
 \alias{tbl_sum.reactibble}
 \alias{vec_ptype_abbr.reactive_col}
 \alias{pillar_shaft.reactive_col}
-\alias{format.reactive_col}
+\alias{format.pillar_shaft_reactive_col}
 \title{methods}
 \usage{
 tbl_sum.reactibble(x)
@@ -13,10 +13,10 @@ vec_ptype_abbr.reactive_col(x)
 
 pillar_shaft.reactive_col(x, ...)
 
-\method{format}{reactive_col}(x, ...)
+\method{format}{pillar_shaft_reactive_col}(x, ...)
 }
 \arguments{
-\item{x}{Object to summarise.}
+\item{x}{Object to summarise}
 
 \item{...}{These dots are for future extensions and must be empty.}
 }

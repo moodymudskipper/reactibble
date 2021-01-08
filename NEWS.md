@@ -10,3 +10,4 @@
 * all columns created by mutate and transmute are forced to be static when `~` is
   not used, this means copying a column without using `~` creates a static copy
 * Refreshing occurs in the correct order
+* Dynamic columns now print in cyan, or in a custom color

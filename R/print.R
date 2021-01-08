@@ -1,13 +1,9 @@
-#' @export
-print.reactibble <- function(x, ..., n = NULL, width = NULL, n_extra = NULL) {
-  txt <- format(x, ..., n = n, width = width, n_extra = n_extra)
-  # txt <- gsub("\033\\[3m\033\\[38;5;246m<~(.*?)>\033\\[39m\033\\[23m",
-  #      "\033[31m<~\\1>\033[39m", txt)
-  txt <- gsub("\033\\[3m\033\\[90m<~(.*?)>\033\\[39m\033\\[23m",
-              "\033[31m<~\\1>\033[39m", txt)
-  cli::cat_line(txt)
-  invisible(x)
-}
+# #' @export
+# print.reactibble <- function(x, ..., n = NULL, width = NULL, n_extra = NULL) {
+#   txt <- format(x, ..., n = n, width = width, n_extra = n_extra)
+#   cli::cat_line(txt)
+#   invisible(x)
+# }
 
 #' @inheritParams tibble::tbl_sum
 #' @export
@@ -29,16 +25,21 @@ vec_ptype_abbr.reactive_col <- function(x) {
 #' @export
 #' @rdname methods
 pillar_shaft.reactive_col <- function(x, ...) {
-  # to use the format of the original class
-  out <- strip_reactive_col(format(x))
-  out[is.na(x)] <- NA
-  pillar::new_pillar_shaft(out, align = "left", na_indent = 5, class = "reactive_col", width = 5)
+  # create the pillar from the original class
+  shaft <- pillar::pillar_shaft(strip_reactive_col(x), ...)
+  # add a class so it can be forwarded to the right format method
+  class(shaft) <- c("pillar_shaft_reactive_col", class(shaft))
+  shaft
 }
 
-#' @inheritParams format
+#' @inheritParams base::format
 #' @export
 #' @rdname methods
-format.reactive_col <- function(x, ...) {
+format.pillar_shaft_reactive_col<- function(x, ...) {
   f <- getOption("reactibble.highlight") %||% c
-  format(f(x), ...)
+  # apply format method for original class
+  fmt<- NextMethod()
+  # add color to output, preserving the attributes by using []<-
+  fmt[] <- f(fmt)
+  fmt
 }

@@ -2,10 +2,6 @@
 output: github_document
 ---
 
-<!-- badges: start -->
-[![Codecov test coverage](https://codecov.io/gh/moodymudskipper/reactibble/branch/master/graph/badge.svg)](https://codecov.io/gh/moodymudskipper/reactibble?branch=master)
-<!-- badges: end -->
-
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -79,11 +75,10 @@ rt
 
 Note that reactive columns are shown in cyan (not in rendered output, such as this document). 
 
-![](tools/rstudio.png)
-![](tools/terminal.png)
-
 This is configurable via the option "reactibble.highlight". 
-Set to another `{crayon}` function to change the style.
+Set to another *{crayon}* function to change the style.
+
+![](tools/rstudio.png)
 
 ```{r}
 options(reactibble.highlight = crayon::yellow)
@@ -92,8 +87,9 @@ rt
 
 Set this option to `NULL` to disable highlighting of reactive columns.
 
-We can add other reactive columns by using `mutate` with `~`, we'll need to
-attach *{dplyr}* :
+We can add other reactive columns by using `mutate.reactibble` (or just `mutate`
+if *{dplyr}* is attached) with `~` :
+attach  :
 
 ```{r}
 library(dplyr, warn.conflicts = FALSE)
