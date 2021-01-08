@@ -8,24 +8,35 @@ refresh <- function(x) {
 
 #' @export
 refresh.data.frame <- function(x) {
-  #message("refreshing")
   call <- sys.call()
   pf <- parent.frame()
-  for(i in seq_along(x)) {
-    if(inherits(x[[i]], "reactive_col")) {
-      cl <- class(x[[i]])
-      expr <- attr(x[[i]],"reactibble_expr")
-      x[[i]] <- tryCatch(eval(expr, x, pf), error = function(e) {
-        missing_vars <- setdiff(all.vars(expr), names(x))
-        msg <- sprintf(
-          "Attempt to drop variables required by `%s`: %s",
-          names(x)[[i]], toString(paste0("`", missing_vars, "`")))
-        e$message <- msg
-        e$call <- call
-        stop(e)
-      })
-      class(x[[i]]) <- union("reactive_col", class(x[[i]]))
-      attr(x[[i]],"reactibble_expr") <- expr
+  unrefreshed <- sapply(x, inherits, "reactive_col")
+  unrefreshed_vars <- lapply(x[unrefreshed], function(x) {
+    all.vars(attr(x,"reactibble_expr"))
+  })
+  while(any(unrefreshed)) {
+    unrefreshed_bkp <- unrefreshed
+    for(var in names(unrefreshed_vars)) {
+      if(!any(unrefreshed[unrefreshed_vars[[var]]])) {
+        cl <- class(x[[var]])
+        expr <- attr(x[[var]],"reactibble_expr")
+        x[[var]] <- tryCatch(eval(expr, x, pf), error = function(e) {
+          missing_vars <- setdiff(all.vars(expr), names(x))
+          msg <- sprintf(
+            "Attempt to drop variables required by `%s`: %s",
+            names(x)[[var]], toString(paste0("`", missing_vars, "`")))
+          e$message <- msg
+          e$call <- call
+          stop(e)
+        })
+        class(x[[var]]) <- union("reactive_col", class(x[[var]]))
+        attr(x[[var]],"reactibble_expr") <- expr
+        unrefreshed[var] <- FALSE
+        unrefreshed_vars[var] <- NULL
+      }
+    }
+    if(identical(unrefreshed, unrefreshed_bkp)) {
+      stop("The definition of reactive is circular")
     }
   }
   x
