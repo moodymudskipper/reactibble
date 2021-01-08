@@ -73,7 +73,8 @@ within.reactibble <- function (data, expr, ...) {
   args <- setNames(lapply(value, as.symbol), names(x))
   for (i in seq_along(x)) {
     if(inherits(x[[i]], "reactive_col")) {
-      attr(x[[i]], "expr") <- do.call(substitute, c(list(attr(x[[i]], "expr"), args)))
+      attr(x[[i]], "reactibble_expr") <-
+        do.call(substitute, c(list(attr(x[[i]], "reactibble_expr"), args)))
     }
   }
   names(x) <- value

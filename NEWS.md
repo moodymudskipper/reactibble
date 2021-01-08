@@ -7,3 +7,5 @@
 * implemented is_reactibble, and materialize
 * implemented a proper printing method
 * when using `[[` or `$` on a reactibble, we fetch the static value
+* all columns created by mutate and transmute are forced to be static when `~` is
+  not used, this means copying a column without using `~` creates a static copy

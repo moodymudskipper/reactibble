@@ -5,7 +5,7 @@ refresh <- function(x) {
   for(i in seq_along(x)) {
     if(inherits(x[[i]], "reactive_col")) {
       cl <- class(x[[i]])
-      expr <- attr(x[[i]],"expr")
+      expr <- attr(x[[i]],"reactibble_expr")
       x[[i]] <- tryCatch(eval(expr, x, pf), error = function(e) {
         missing_vars <- setdiff(all.vars(expr), names(x))
         msg <- sprintf(
@@ -16,7 +16,7 @@ refresh <- function(x) {
         stop(e)
       })
       class(x[[i]]) <- union("reactive_col", class(x[[i]]))
-      attr(x[[i]],"expr") <- expr
+      attr(x[[i]],"reactibble_expr") <- expr
     }
   }
   x

@@ -1,3 +1,37 @@
+process_reactive_dots <- function(...) {
+  dots <- rlang::enquos(...)
+  lapply(dots, function(x) {
+    expr <- rlang::quo_get_expr(x)
+    expr_is_reactive <- is.call(expr) && identical(expr[[1]], quote(`~`))
+    if(expr_is_reactive) {
+      env <- attr(x, ".Environment")
+      x <-  rlang::as_quosure(expr[[2]], env = env)
+      attr(x, "reactibble_expr") <- expr[[2]]
+    }
+    x
+  })
+}
+
+process_reactive_output <- function(x, dots) {
+  dots <- dots[!duplicated(names(dots), fromLast = TRUE)]
+  nms <- names(dots)
+  x[nms] <- lapply(nms, function(nm) {
+    expr <- attr(dots[[nm]], "reactibble_expr")
+    col <- .subset2(x, nm)
+    if (is.null(expr)) {
+      col <- strip_reactive_col(col)
+    } else {
+      class(col) <- union("reactive_col", class(col))
+      attr(col,"reactibble_expr") <- expr
+    }
+    col
+  })
+  if(getOption("reactibble.autorefresh")) {
+    x <- refresh(x)
+  }
+  x
+}
+
 #' modify a reactibble object
 #'
 #' These work exactly like dplyr's mutate and transmute, except that one can
@@ -6,55 +40,21 @@
 #' @inheritParams dplyr::mutate
 #' @rdname mutate.reactibble
 mutate.reactibble <- function(.data, ...) {
-  dots <- rlang::enquos(...)
-  # I don't know all the right rlang utilities so I just take my big knife sorry
-  has_tilde_lgl <- sapply(dots, function(x) {
-    expr <- rlang::quo_get_expr(x)
-    is.call(expr) && identical(expr[[1]], quote(`~`))
-  })
-  inds <- which(has_tilde_lgl)
-  nms <- names(dots)[inds]
-  exprs <- vector("list", length(inds))
-  for(i in seq_along(inds)) {
-    env <- attr(dots[[inds[i]]], ".Environment")
-    exprs[[i]] <- rlang::quo_get_expr(dots[[inds[i]]])[[2]]
-    dots[[inds[i]]] <- rlang::as_quosure(exprs[[i]], env = env)
-  }
-  res <- dplyr::mutate(strip_reactibble_class(.data), !!!dots)
-  for(i in seq_along(inds)) {
-    class(res[[nms[i]]]) <- union("reactive_col", class(res[[nms[i]]]))
-    attr(res[[nms[i]]],"expr") <- exprs[[i]]
-  }
-  if(getOption("reactibble.autorefresh")) {
-    res <- refresh(res)
-  }
-  as_reactibble(res)
+  cl <- class(.data)
+  dots  <- process_reactive_dots(...)
+  .data <- dplyr::mutate(strip_reactibble_class(.data), !!!dots)
+  .data <- process_reactive_output(.data, dots)
+  class(.data) <- cl
+  .data
 }
 
 #' @export
 #' @rdname mutate.reactibble
 transmute.reactibble <- function(.data, ...) {
-  dots <- rlang::enquos(...)
-  # I don't know all the right rlang utilities so I just take my big knife sorry
-  has_tilde_lgl <- sapply(dots, function(x) {
-    expr <- rlang::quo_get_expr(x)
-    is.call(expr) && identical(expr[[1]], quote(`~`))
-  })
-  inds <- which(has_tilde_lgl)
-  nms <- names(dots)[inds]
-  exprs <- vector("list", length(inds))
-  for(i in seq_along(inds)) {
-    env <- attr(dots[[inds[i]]], ".Environment")
-    exprs[[i]] <- rlang::quo_get_expr(dots[[inds[i]]])[[2]]
-    dots[[inds[i]]] <- rlang::as_quosure(exprs[[i]], env = env)
-  }
-  res <- dplyr::transmute(strip_reactibble_class(.data), !!!dots)
-  for(i in seq_along(inds)) {
-    class(res[[nms[i]]]) <- union("reactive_col", class(res[[nms[i]]]))
-    attr(res[[nms[i]]],"expr") <- exprs[[i]]
-  }
-  if(getOption("reactibble.autorefresh")) {
-    res <- refresh(res)
-  }
-  as_reactibble(res)
+  cl <- class(.data)
+  dots  <- process_reactive_dots(...)
+  .data <- dplyr::transmute(strip_reactibble_class(.data), !!!dots)
+  .data <- process_reactive_output(.data, dots)
+  class(.data) <- cl
+  .data
 }
