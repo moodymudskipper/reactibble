@@ -1,4 +1,13 @@
+#' Refresh dynamic columns manually
+#'
+#' @param x object
+#' @export
 refresh <- function(x) {
+  UseMethod("refresh", x)
+}
+
+#' @export
+refresh.data.frame <- function(x) {
   #message("refreshing")
   call <- sys.call()
   pf <- parent.frame()
@@ -21,3 +30,12 @@ refresh <- function(x) {
   }
   x
 }
+
+#' @export
+refresh.reactibble <- function(x) {
+  cl <- class(x)
+  x <- refresh(strip_reactibble_class(x))
+  class(x) <- cl
+  x
+}
+

@@ -2,7 +2,10 @@
 output: github_document
 ---
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
+<!-- badges: start -->
+[![Codecov test coverage](https://codecov.io/gh/moodymudskipper/reactibble/branch/master/graph/badge.svg)](https://codecov.io/gh/moodymudskipper/reactibble?branch=master)
+<!-- badges: end -->
+
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
