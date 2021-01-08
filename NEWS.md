@@ -11,3 +11,4 @@
   not used, this means copying a column without using `~` creates a static copy
 * Refreshing occurs in the correct order
 * Dynamic columns now print in cyan, or in a custom color
+* reactibble object can contain list columns

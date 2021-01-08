@@ -21,11 +21,11 @@ process_reactive_output <- function(x, dots) {
     if (is.null(expr)) {
       col <- strip_reactive_col(col)
     } else {
-      class(col) <- union("reactive_col", attr(col, "class"))
-      attr(col,"reactibble_expr") <- expr
+      col <- as_reactive_col(col, expr)
     }
     col
   })
+
   if(getOption("reactibble.autorefresh")) {
     x <- refresh(x)
   }

@@ -37,8 +37,18 @@ strip_reactibble_class <- function(x) {
   x
 }
 
+as_reactive_col <- function(x, expr) {
+  if(is.list(x))
+    # to work around tibble issue
+    class(x) <- union(c("reactive_col", "list"), attr(x, "class"))
+  else
+    class(x) <- union("reactive_col", attr(col, "class"))
+  attr(x,"reactibble_expr") <- expr
+  x
+}
+
 strip_reactive_col <- function(x) {
-  class(x) <- setdiff(attr(x, "class"), "reactive_col")
+  class(x) <- setdiff(attr(x, "class"), c("reactive_col", "list"))
   attr(x, "reactibble_expr") <- NULL
   x
 }

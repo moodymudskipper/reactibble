@@ -19,7 +19,6 @@ refresh.data.frame <- function(x) {
     for(var in names(unrefreshed_vars)) {
       dependencies <-unrefreshed_vars[[var]]
       if(!any(na.omit(unrefreshed[dependencies]))){
-        cl <- class(x[[var]])
         expr <- attr(x[[var]],"reactibble_expr")
         x[[var]] <- tryCatch(eval(expr, x, pf), error = function(e) {
           missing_vars <- setdiff(all.vars(expr), names(x))
@@ -30,8 +29,7 @@ refresh.data.frame <- function(x) {
           e$call <- call
           stop(e)
         })
-        class(x[[var]]) <- union("reactive_col", attr(x[[var]], "class"))
-        attr(x[[var]],"reactibble_expr") <- expr
+        x[[var]] <- as_reactive_col(x[[var]], expr)
         unrefreshed[var] <- FALSE
         unrefreshed_vars[var] <- NULL
       }

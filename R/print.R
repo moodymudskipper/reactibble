@@ -40,6 +40,10 @@ format.pillar_shaft_reactive_col<- function(x, ...) {
   # apply format method for original class
   fmt<- NextMethod()
   # add color to output, preserving the attributes by using []<-
-  fmt[] <- f(fmt)
+  if(!is.null(getOption("reactibble.highlight"))) {
+    # deal with lists, which are already colored by crayon
+    fmt[] <- gsub("\033\\[90m(.*?)\033\\[39m", "\\1", fmt)
+    fmt[] <- f(fmt)
+  }
   fmt
 }
