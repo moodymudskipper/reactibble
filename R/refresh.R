@@ -9,8 +9,8 @@ refresh <- function(x) {
       x[[i]] <- tryCatch(eval(expr, x, pf), error = function(e) {
         missing_vars <- setdiff(all.vars(expr), names(x))
         msg <- sprintf(
-          "Attempt to drop variables required by `%s`: `%s`",
-          names(x)[[i]], toString(missing_vars))
+          "Attempt to drop variables required by `%s`: %s",
+          names(x)[[i]], toString(paste0("`", missing_vars, "`")))
         e$message <- msg
         e$call <- call
         stop(e)
