@@ -17,19 +17,20 @@ refresh.data.frame <- function(x) {
   while(any(unrefreshed)) {
     unrefreshed_bkp <- unrefreshed
     for(var in names(unrefreshed_vars)) {
-      if(!any(unrefreshed[unrefreshed_vars[[var]]])) {
+      dependencies <-unrefreshed_vars[[var]]
+      if(!any(na.omit(unrefreshed[dependencies]))){
         cl <- class(x[[var]])
         expr <- attr(x[[var]],"reactibble_expr")
         x[[var]] <- tryCatch(eval(expr, x, pf), error = function(e) {
           missing_vars <- setdiff(all.vars(expr), names(x))
-          msg <- sprintf(
-            "Attempt to drop variables required by `%s`: %s",
-            names(x)[[var]], toString(paste0("`", missing_vars, "`")))
+          msg <- paste0(
+            e$message,
+            "\nDid you drop a necessary variable or provide an incorrect expression?")
           e$message <- msg
           e$call <- call
           stop(e)
         })
-        class(x[[var]]) <- union("reactive_col", class(x[[var]]))
+        class(x[[var]]) <- union("reactive_col", attr(x[[var]], "class"))
         attr(x[[var]],"reactibble_expr") <- expr
         unrefreshed[var] <- FALSE
         unrefreshed_vars[var] <- NULL
