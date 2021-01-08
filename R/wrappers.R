@@ -54,13 +54,10 @@ within.reactibble <- function (data, expr, ...) {
 
 #' @export
 `[.reactibble` <- function(x, ...){
-  cl <- class(x)
-  x <- strip_reactibble_class(x)
-  x <- x[...]
+  x <- NextMethod()
   if(getOption("reactibble.autorefresh")) {
     x <- refresh(x)
   }
-  class(x) <- cl
   x
 }
 
