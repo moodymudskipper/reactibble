@@ -1,11 +1,17 @@
 Package: reactibble
 Title: Use Dynamic Columns in Data Frames
 Version: 0.0.0.9000
-Authors@R: 
+Authors@R: c(
     person(given = "Antoine",
            family = "Fabri",
            role = c("aut", "cre"),
-           email = "antoine.fabri@gmail.com")
+           email = "antoine.fabri@gmail.com"),
+    person(given = "Jonathan", 
+           family = "Carroll",
+           role = c("ctb"),
+           email = "rpkg@jcarroll.com.au",
+           comment = c(ORCID = "0000-0002-1404-5264"))
+    )
 Description: Use dynamic columns in data frames.
 License: GPL-3
 Encoding: UTF-8

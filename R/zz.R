@@ -13,7 +13,8 @@
 
   op <- options()
   op.reactibble <- list(
-    reactibble.autorefresh = TRUE
+    reactibble.autorefresh = TRUE,
+    reactibble.highlight = crayon::cyan # set to NULL to disable
   )
   toset <- !(names(op.reactibble) %in% names(op))
   if(any(toset)) options(op.reactibble[toset])

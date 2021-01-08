@@ -77,6 +77,21 @@ rt <- within(rt, height <- runif(3, 1.5, 2))
 rt
 ```
 
+Note that reactive columns are shown in cyan (not in rendered output, such as this document). 
+
+![](tools/rstudio.png)
+![](tools/terminal.png)
+
+This is configurable via the option "reactibble.highlight". 
+Set to another `{crayon}` function to change the style.
+
+```{r}
+options(reactibble.highlight = crayon::yellow)
+rt
+```
+
+Set this option to `NULL` to disable highlighting of reactive columns.
+
 We can add other reactive columns by using `mutate` with `~`, we'll need to
 attach *{dplyr}* :
 
