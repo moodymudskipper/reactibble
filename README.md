@@ -44,19 +44,7 @@ Oops, height was in the wrong unit, we correct it, bmi is corrected as
 well:
 
 ``` r
-rt <- transform(rt, height = height/100)
-rt
-#> # A reactibble: 3 x 3
-#>   height weight    bmi
-#>    <dbl>  <dbl> <~dbl>
-#> 1   1.5       7   3.11
-#> 2   1.72     82  27.7 
-#> 3   1.64     68  25.3
-```
-
-It is robust to other ways to change values
-
-``` r
+# the following all work and are equivalent
 rt[[1]] <- runif(3, 1.5, 2)
 rt
 #> # A reactibble: 3 x 3

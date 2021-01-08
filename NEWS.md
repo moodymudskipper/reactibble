@@ -12,3 +12,6 @@
 * Refreshing occurs in the correct order
 * Dynamic columns now print in cyan, or in a custom color
 * reactibble object can contain list columns
+* `transform.reactibble` triggers a warnings and returns a static data.frame
+* `within.reactibble` warns that it might be unsafe
+* `with.reactibble` is defined, only to make sure we don't return a "reactive_col" object

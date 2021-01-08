@@ -29,9 +29,19 @@
 
 #' @export
 transform.reactibble <- function (`_data`, ...) {
-  cl <- class(`_data`)
-  x <- strip_reactibble_class(`_data`)
-  x <- transform(x, ...)
+  warning("transform converts a 'reactibble' object to a static data frame, ",
+          "use `mutate.reactibble` to preserve reactive columns")
+  as.data.frame(materialize(`_data`))
+}
+
+#' @export
+within.reactibble <- function (data, expr, ...) {
+  warning(
+    "Using `within` on a 'reactibble' object is discouraged and ",
+    "potentially unsafe, use `mutate.reactibble` instead")
+  cl <- class(data)
+  x <- strip_reactibble_class(data)
+  x <- eval.parent(substitute(within(x, expr, ...), environment()))
   if(getOption("reactibble.autorefresh")) {
     x <- refresh(x)
   }
@@ -40,15 +50,13 @@ transform.reactibble <- function (`_data`, ...) {
 }
 
 #' @export
-within.reactibble <- function (data, expr, ...) {
-  cl <- class(data)
-  x <- strip_reactibble_class(data)
-  x <- eval.parent(substitute(within(x, expr, ...)))
-  if(getOption("reactibble.autorefresh")) {
-    x <- refresh(x)
-  }
-  class(x) <- cl
-  x
+with.reactibble <- function (data, expr, ...) {
+  # this just makes sure the output is not a reactive column
+  warning(
+    "Using `with` on a 'reactibble' object is discouraged and potentially ",
+    "unsafe, use `mutate.reactibble` instead")
+  x <- eval.parent(substitute(with(x, expr, ...), environment()))
+  strip_reactive_col(x)
 }
 
 

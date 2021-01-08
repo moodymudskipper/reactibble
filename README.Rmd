@@ -53,13 +53,7 @@ rt
 Oops, height was in the wrong unit, we correct it, bmi is corrected as well:
 
 ```{r}
-rt <- transform(rt, height = height/100)
-rt
-```
-
-It is robust to other ways to change values
-
-```{r}
+# the following all work and are equivalent
 rt[[1]] <- runif(3, 1.5, 2)
 rt
 
