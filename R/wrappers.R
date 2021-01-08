@@ -119,3 +119,13 @@ within.reactibble <- function (data, expr, ...) {
 # # to avoid error with devtools::load_all()
 # as.data.table <- NULL
 #
+
+#' @export
+`[[.reactibble` <- function(x, ...) {
+  strip_reactive_col(.subset2(x, ...))
+}
+
+#' @export
+`$.reactibble` <- function(x, ...) {
+  strip_reactive_col(.subset2(x, ...))
+}
