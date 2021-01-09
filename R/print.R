@@ -1,9 +1,32 @@
+#' @export
+print.reactibble <- function(x, ..., n = NULL, width = NULL, n_extra = NULL) {
+  txt <- format(as_reactibble0(x), ..., n = n, width = width, n_extra = n_extra)
+  cli::cat_line(txt)
+  invisible(x)
+}
+
+# we define a class reactibble0 so we can print without calling [.reactibble,
+# which is costly as it triggers a refresh
+# needed to avoid a couple refreshes when printing
+
+as_reactibble0 <- function(x) {
+  class(x) <- c("reactibble0", class(x))
+  x
+}
+
 # #' @export
-# print.reactibble <- function(x, ..., n = NULL, width = NULL, n_extra = NULL) {
-#   txt <- format(x, ..., n = n, width = width, n_extra = n_extra)
-#   cli::cat_line(txt)
-#   invisible(x)
+# as.data.frame.reactibble0 <- function(x) {
+#   class(x) <- "data.frame"
+#   x
 # }
+
+#' @export
+`[.reactibble0` <-  function(x, ...) {
+  class(x) <- setdiff(class(x), c("reactibble0", "reactibble"))
+  x <- x[...]
+  class(x) <- c("reactibble0", "reactibble", class(x))
+  x
+}
 
 #' @inheritParams tibble::tbl_sum
 #' @export
@@ -25,11 +48,20 @@ vec_ptype_abbr.reactive_col <- function(x) {
 #' @export
 #' @rdname methods
 pillar_shaft.reactive_col <- function(x, ...) {
+  printing_tibble <-
+    list(quote(print.tbl(x))) %in% as.list(sys.calls())
+  if(printing_tibble & getOption("reactibble.autorefresh")) {
+    pillar::new_pillar_shaft(
+      rep_len("unsynced!!!", length(x)),
+      class = "pillar_shaft_unsynced",
+      align = "left", na_indent = 5, width = 5)
+  } else {
   # create the pillar from the original class
   shaft <- pillar::pillar_shaft(strip_reactive_col(x), ...)
   # add a class so it can be forwarded to the right format method
   class(shaft) <- c("pillar_shaft_reactive_col", class(shaft))
   shaft
+  }
 }
 
 #' @inheritParams base::format
@@ -46,4 +78,11 @@ format.pillar_shaft_reactive_col<- function(x, ...) {
     fmt[] <- f(fmt)
   }
   fmt
+}
+
+#' @inheritParams base::format
+#' @export
+#' @rdname methods
+format.pillar_shaft_unsynced <- function(x, ...) {
+  format(crayon::red(x))
 }

@@ -16,3 +16,8 @@
 * `within.reactibble` warns that it might be unsafe
 * `with.reactibble` is defined, only to make sure we don't return a "reactive_col" object
 * implement methods for join functions
+* Optimized print so it doesn't refresh
+* When printing a tibble and the "reactibble.autorefresh" option is `TRUE` mark
+  columns as "unsynced" colored in red.
+  
+  

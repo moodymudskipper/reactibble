@@ -5,6 +5,7 @@
 \alias{vec_ptype_abbr.reactive_col}
 \alias{pillar_shaft.reactive_col}
 \alias{format.pillar_shaft_reactive_col}
+\alias{format.pillar_shaft_unsynced}
 \title{methods}
 \usage{
 tbl_sum.reactibble(x)
@@ -14,6 +15,8 @@ vec_ptype_abbr.reactive_col(x)
 pillar_shaft.reactive_col(x, ...)
 
 \method{format}{pillar_shaft_reactive_col}(x, ...)
+
+\method{format}{pillar_shaft_unsynced}(x, ...)
 }
 \arguments{
 \item{x}{Object to summarise}
