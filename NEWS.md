@@ -19,5 +19,6 @@
 * Optimized print so it doesn't refresh
 * When printing a tibble and the "reactibble.autorefresh" option is `TRUE` mark
   columns as "unsynced" colored in red.
+* Optimize process_reactive_dots so reactive columns are coomputed only in the end
   
   

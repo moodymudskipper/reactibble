@@ -5,7 +5,8 @@ process_reactive_dots <- function(...) {
     expr_is_reactive <- is.call(expr) && identical(expr[[1]], quote(`~`))
     if(expr_is_reactive) {
       env <- attr(x, ".Environment")
-      x <-  rlang::as_quosure(expr[[2]], env = env)
+      # we initiate with NA so we compute it only once we refresh
+      x <- NA
       attr(x, "reactibble_expr") <- expr[[2]]
     }
     x
