@@ -9,14 +9,23 @@ is_reactibble <- function(x) {
 
 
 #' Convert to a reactibble object
-#' @param x A data frame, list, matrix, or other object that could reasonably be coerced to a tibble.
 #'
+#' @param x forwarded to tibble::as_tibble
+#' @param ... forwarded to tibble::as_tibble
+#' @param .rows forwarded to tibble::as_tibble
+#' @param .name_repair forwarded to tibble::as_tibble
+#' @param rownames forwarded to tibble::as_tibble
 #' @export
-as_reactibble <- function(x) {
+as_reactibble <- function(
+  x, ..., .rows = NULL,
+  .name_repair = c("check_unique", "unique", "universal", "minimal"),
+  rownames = pkgconfig::get_config("tibble::rownames", NULL )) {
   if(is_reactibble(x)) {
     class(x) <- c("reactibble", "tbl_df", "tbl", "data.frame")
+    return(x)
   }
-  x <- tibble::as_tibble(x)
+  x <- tibble::as_tibble(
+    x, ..., .rows = .rows, .name_repair = .name_repair, rownames = rownames)
   class(x) <- union("reactibble", class(x))
   x
 }
@@ -42,7 +51,7 @@ as_reactive_col <- function(x, expr) {
     # to work around tibble issue
     class(x) <- union(c("reactive_col", "list"), attr(x, "class"))
   else
-    class(x) <- union("reactive_col", attr(col, "class"))
+    class(x) <- union("reactive_col", attr(x, "class"))
   attr(x,"reactibble_expr") <- expr
   x
 }
