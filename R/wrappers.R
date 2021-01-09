@@ -29,10 +29,11 @@
 
 #' @export
 transform.reactibble <- function (`_data`, ...) {
-  warning("transform converts a 'reactibble' object to a static data frame, ",
+  warning("`transform` converts a 'reactibble' object to a static data frame, ",
           "use `mutate.reactibble` to preserve reactive columns")
   as.data.frame(materialize(`_data`))
 }
+
 
 #' @export
 within.reactibble <- function (data, expr, ...) {
