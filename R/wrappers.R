@@ -56,8 +56,8 @@ with.reactibble <- function (data, expr, ...) {
   warning(
     "Using `with` on a 'reactibble' object is discouraged and potentially ",
     "unsafe, use `mutate.reactibble` instead")
-  x <- eval.parent(substitute(with(x, expr, ...), environment()))
-  strip_reactive_col(x)
+  data <- eval.parent(substitute(with.default(data, expr, ...), environment()))
+  strip_reactive_col(data)
 }
 
 
