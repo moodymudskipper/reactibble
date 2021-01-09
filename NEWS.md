@@ -15,3 +15,4 @@
 * `transform.reactibble` triggers a warnings and returns a static data.frame
 * `within.reactibble` warns that it might be unsafe
 * `with.reactibble` is defined, only to make sure we don't return a "reactive_col" object
+* implement methods for join functions
