@@ -12,14 +12,14 @@ refresh.data.frame <- function(x) {
   pf <- parent.frame()
   unrefreshed <- sapply(x, inherits, "reactive_col")
   unrefreshed_vars <- lapply(x[unrefreshed], function(x) {
-    all.vars(attr(x,"reactibble_expr"))
+    all.vars(attr(x,"reactible_col_def"))
   })
   while(any(unrefreshed)) {
     unrefreshed_bkp <- unrefreshed
     for(var in names(unrefreshed_vars)) {
       dependencies <-unrefreshed_vars[[var]]
       if(!any(na.omit(unrefreshed[dependencies]))){
-        expr <- attr(x[[var]],"reactibble_expr")
+        expr <- attr(x[[var]],"reactible_col_def")
         x[[var]] <- tryCatch(rlang::eval_tidy(expr, x), error = function(e) {
           missing_vars <- setdiff(all.vars(expr), names(x))
           msg <- paste0(

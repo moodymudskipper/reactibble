@@ -52,13 +52,13 @@ as_reactive_col <- function(x, expr) {
     class(x) <- union(c("reactive_col", "list"), attr(x, "class"))
   else
     class(x) <- union("reactive_col", attr(x, "class"))
-  attr(x,"reactibble_expr") <- expr
+  attr(x,"reactible_col_def") <- expr
   x
 }
 
 strip_reactive_col <- function(x) {
   class(x) <- setdiff(attr(x, "class"), c("reactive_col", "list"))
-  attr(x, "reactibble_expr") <- NULL
+  attr(x, "reactible_col_def") <- NULL
   x
 }
 

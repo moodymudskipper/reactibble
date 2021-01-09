@@ -7,7 +7,7 @@ process_reactive_dots <- function(...) {
       env <- attr(x, ".Environment")
       column_definition <- rlang::as_quosure(expr[[2]], attr(x, ".Environment"))
       x <- NA
-      attr(x, "reactibble_expr") <- column_definition
+      attr(x, "reactible_col_def") <- column_definition
     }
     x
   })
@@ -17,7 +17,7 @@ process_reactive_output <- function(x, dots) {
   dots <- dots[!duplicated(names(dots), fromLast = TRUE)]
   nms <- names(dots)
   x[nms] <- lapply(nms, function(nm) {
-    expr <- attr(dots[[nm]], "reactibble_expr")
+    expr <- attr(dots[[nm]], "reactible_col_def")
     col <- .subset2(x, nm)
     if (is.null(expr)) {
       col <- strip_reactive_col(col)
