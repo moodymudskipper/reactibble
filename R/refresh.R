@@ -20,7 +20,7 @@ refresh.data.frame <- function(x) {
       dependencies <-unrefreshed_vars[[var]]
       if(!any(na.omit(unrefreshed[dependencies]))){
         expr <- attr(x[[var]],"reactibble_expr")
-        x[[var]] <- tryCatch(eval(expr, x, pf), error = function(e) {
+        x[[var]] <- tryCatch(rlang::eval_tidy(expr, x), error = function(e) {
           missing_vars <- setdiff(all.vars(expr), names(x))
           msg <- paste0(
             e$message,
