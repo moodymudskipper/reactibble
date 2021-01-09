@@ -7,7 +7,6 @@ print.reactibble <- function(x, ..., n = NULL, width = NULL, n_extra = NULL) {
 
 # we define a class reactibble0 so we can print without calling [.reactibble,
 # which is costly as it triggers a refresh
-# needed to avoid a couple refreshes when printing
 
 as_reactibble0 <- function(x) {
   class(x) <- c("reactibble0", class(x))
@@ -32,7 +31,8 @@ as_reactibble0 <- function(x) {
 #' @export
 #' @rdname methods
 tbl_sum.reactibble <- function (x){
-  c(`A reactibble` = paste(nrow(x), "x", ncol(x)))
+  f <- getOption("reactibble.highlight") %||% c
+  setNames(paste(nrow(x), "x", ncol(x)), paste("A", f("reactibble")))
 }
 
 #' methods
