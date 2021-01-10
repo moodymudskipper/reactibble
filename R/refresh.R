@@ -39,6 +39,8 @@ refresh.data.frame <- function(x) {
       stop("The definition of reactive columns is circular")
     }
   }
+  if(getOption("reactibble.verbose.refresh"))
+    message("refreshed 'reactibble' object")
   x
 }
 
