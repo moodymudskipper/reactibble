@@ -8,6 +8,7 @@ refresh <- function(x) {
 
 #' @export
 refresh.data.frame <- function(x) {
+  if(!nrow(x)) return(x)
   call <- sys.call()
   pf <- parent.frame()
   unrefreshed <- sapply(x, inherits, "reactive_col")
