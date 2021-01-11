@@ -38,10 +38,7 @@ left_join.reactibble <- function (
   x, y, by = NULL, copy = FALSE, suffix = c(".x",  ".y"), ..., keep = FALSE) {
   check_join_by_arg(x, y, by)
   data <- NextMethod()
-  if(getOption("reactibble.autorefresh")) {
-    data <- refresh(data)
-  }
-  data
+  refresh_if_relevant(data)
 }
 
 #' @export
@@ -49,10 +46,7 @@ right_join.reactibble <- function (
   x, y, by = NULL, copy = FALSE, suffix = c(".x",  ".y"), ..., keep = FALSE) {
   check_join_by_arg(x, y, by)
   data <- NextMethod()
-  if(getOption("reactibble.autorefresh")) {
-    data <- refresh(data)
-  }
-  data
+  refresh_if_relevant(data)
 }
 
 #' @export
@@ -60,10 +54,7 @@ inner_join.reactibble <- function (
   x, y, by = NULL, copy = FALSE, suffix = c(".x",  ".y"), ..., keep = FALSE) {
   check_join_by_arg(x, y, by)
   data <- NextMethod()
-  if(getOption("reactibble.autorefresh")) {
-    data <- refresh(data)
-  }
-  data
+  refresh_if_relevant(data)
 }
 
 #' @export
@@ -71,10 +62,7 @@ full_join.reactibble <- function (
   x, y, by = NULL, copy = FALSE, suffix = c(".x",  ".y"), ..., keep = FALSE) {
   check_join_by_arg(x, y, by)
   data <- NextMethod()
-  if(getOption("reactibble.autorefresh")) {
-    data <- refresh(data)
-  }
-  data
+  refresh_if_relevant(data)
 }
 
 #' @export
@@ -82,10 +70,7 @@ anti_join.reactibble <- function (
   x, y, by = NULL, copy = FALSE, ...) {
   check_join_by_arg(x, y, by)
   data <- NextMethod()
-  if(getOption("reactibble.autorefresh")) {
-    data <- refresh(data)
-  }
-  data
+  refresh_if_relevant(data)
 }
 
 #' @export
@@ -93,10 +78,7 @@ semi_join.reactibble <- function (
   x, y, by = NULL, copy = FALSE, ...) {
   check_join_by_arg(x, y, by)
   data <- NextMethod()
-  if(getOption("reactibble.autorefresh")) {
-    data <- refresh(data)
-  }
-  data
+  refresh_if_relevant(data)
 }
 
 #' @export
@@ -104,9 +86,6 @@ nest_join.reactibble <- function (
   x, y, by = NULL, copy = FALSE, keep = FALSE, name = NULL, ...) {
   check_join_by_arg(x, y, by)
   data <- NextMethod()
-  if(getOption("reactibble.autorefresh")) {
-    data <- refresh(data)
-  }
-  data
+  refresh_if_relevant(data)
 }
 

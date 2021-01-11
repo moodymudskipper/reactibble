@@ -3,9 +3,7 @@
 `[[<-.reactibble` <- function(x, name, value) {
   x <- strip_reactibble_class(x)
   x[[name]] <- value
-  if(getOption("reactibble.autorefresh")) {
-    x <- refresh(x)
-  }
+  x <- refresh_if_relevant(x)
   as_reactibble(x)
 }
 
@@ -20,9 +18,7 @@
   cl <- class(x)
   x <- strip_reactibble_class(x)
   x[...] <- value
-  if(getOption("reactibble.autorefresh")) {
-    x <- refresh(x)
-  }
+  x <- refresh_if_relevant(x)
   class(x) <- cl
   x
 }
@@ -43,9 +39,7 @@ within.reactibble <- function (data, expr, ...) {
   cl <- class(data)
   x <- strip_reactibble_class(data)
   x <- eval.parent(substitute(within(x, expr, ...), environment()))
-  if(getOption("reactibble.autorefresh")) {
-    x <- refresh(x)
-  }
+  x <- refresh_if_relevant(x)
   class(x) <- cl
   x
 }
@@ -64,10 +58,7 @@ with.reactibble <- function (data, expr, ...) {
 #' @export
 `[.reactibble` <- function(x, ...){
   x <- NextMethod()
-  if(getOption("reactibble.autorefresh")) {
-    x <- refresh(x)
-  }
-  x
+  refresh_if_relevant(x)
 }
 
 #' @export
@@ -155,10 +146,7 @@ dplyr_reconstruct.reactibble <- function (data, template) {
     x
     }, data, reactive_col_attrs)
   class(data) <- class(template)
-  if(getOption("reactibble.autorefresh")) {
-    data <- refresh(data)
-  }
-  data
+  refresh_if_relevant(data)
 }
 
 #' @export
@@ -174,10 +162,7 @@ rbind.reactibble <- function(..., deparse.level = 1) {
     if(!identical(exprs, exprs1))
       stop("Tried to bind a `reactive_col` to an incompatible object.")
   }
-  if(getOption("reactibble.autorefresh")) {
-    data <- refresh(data)
-  }
-  data
+  refresh_if_relevant(data)
 }
 
 #' @export
@@ -190,10 +175,7 @@ slice.reactibble <- function(.data, ..., .preserve = FALSE) {
     x
   }, .data, attrs)
   class(.data) <- cl
-  if(getOption("reactibble.autorefresh")) {
-    .data <- refresh(.data)
-  }
-  .data
+  refresh_if_relevant(.data)
 }
 
 #' Efficiently bind multiple data frames by row and column
@@ -209,10 +191,7 @@ rt_bind_rows <- function(..., .id = NULL) {
   dots <- lapply(list(...), tibble::as_tibble)
   data <- dplyr::bind_rows(!!!dots, .id = .id)
   data <- as_reactibble(data)
-  if(getOption("reactibble.autorefresh")) {
-    data <- refresh(data)
-  }
-  data
+  refresh_if_relevant(data)
 }
 
 #' Add rows to a reactibble
@@ -227,8 +206,5 @@ rt_add_row <- function(.data, ..., .before = NULL, .after = NULL) {
   .data <- tibble::as_tibble(.data)
   .data <- tibble::add_row(.data, ..., .before = NULL, .after = NULL)
   .data <- as_reactibble(.data)
-  if(getOption("reactibble.autorefresh")) {
-    .data <- refresh(.data)
-  }
-  .data
+  refresh_if_relevant(.data)
 }

@@ -31,10 +31,7 @@ process_reactive_output <- function(x, dots) {
     col
   })
 
-  if(getOption("reactibble.autorefresh")) {
-    x <- refresh(x)
-  }
-  x
+  refresh_if_relevant(x)
 }
 
 #' modify a reactibble object
