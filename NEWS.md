@@ -22,5 +22,6 @@
 * Optimize process_reactive_dots so reactive columns are coomputed only in the end
 * Use quosures instead of expressions as column definitions
 * implement temporary solution to rbind and bind_rows using vctrs
+* a method is defined for `dplyr::slice`
   
   

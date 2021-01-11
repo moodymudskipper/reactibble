@@ -182,3 +182,18 @@ rbind.reactibble <- function(..., deparse.level = 1) {
   data
 }
 
+#' @export
+slice.reactibble <- function(.data, ..., .preserve = FALSE) {
+  cl <- class(.data)
+  attrs <- lapply(.data, attr, "reactibble_col_def")
+  .data <- dplyr::slice(tibble::as_tibble(.data), ..., .preserve = TRUE)
+  .data[] <- Map(function(x, y) {
+    attr(x, "reactibble_col_def") <- y
+    x
+  }, .data, attrs)
+  class(.data) <- cl
+  if(getOption("reactibble.autorefresh")) {
+    .data <- refresh(.data)
+  }
+  .data
+}
