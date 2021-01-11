@@ -1,3 +1,9 @@
+# set_formula_en
+#
+# quosure2formula <- function(q) {
+#
+# }
+
 
 #' Convert to a reactibble object
 #' @param x A data frame, list, matrix, or other object that could reasonably be coerced to a tibble.
@@ -5,6 +11,10 @@
 #' @export
 is_reactibble <- function(x) {
   inherits(x, "reactibble")
+}
+
+is_reactive_col <- function(x) {
+  inherits(x, "reactive_col")
 }
 
 
@@ -52,14 +62,13 @@ as_reactive_col <- function(x, expr) {
     class(x) <- union(c("reactive_col", "list"), attr(x, "class"))
   else
     class(x) <- union("reactive_col", attr(x, "class"))
-  attr(x,"reactible_col_def") <- expr
+  attr(x,"reactibble_col_def") <- expr
   x
 }
 
 strip_reactive_col <- function(x) {
-  class(x) <- setdiff(attr(x, "class"), c("reactive_col", "list"))
-  attr(x, "reactible_col_def") <- NULL
-  x
+  # we need this wrapper because vec_data smodifies some non vcrts objects like data frames
+  if(is_reactive_col(x)) vec_data(x) else x
 }
 
 #' convert reactive columns to static columns

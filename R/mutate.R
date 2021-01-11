@@ -4,25 +4,29 @@ process_reactive_dots <- function(...) {
     expr <- rlang::quo_get_expr(x)
     expr_is_reactive <- is.call(expr) && identical(expr[[1]], quote(`~`))
     if(expr_is_reactive) {
-      env <- attr(x, ".Environment")
-      column_definition <- rlang::as_quosure(expr[[2]], attr(x, ".Environment"))
-      x <- NA
-      attr(x, "reactible_col_def") <- column_definition
+      x <- reactive_col(NA, list(
+        expr = expr[[2]],
+        env = attr(x, ".Environment")
+        ))
     }
     x
   })
 }
 
 process_reactive_output <- function(x, dots) {
+  # keep last definition of all modified/created vars
   dots <- dots[!duplicated(names(dots), fromLast = TRUE)]
   nms <- names(dots)
+  # for those remove class "reactive_col" if it wasn't defined as a reactive col
+  # (so copying a reactive_col without using "~" creates a static copy)
+  # if it was defined as such, add the class
   x[nms] <- lapply(nms, function(nm) {
-    expr <- attr(dots[[nm]], "reactible_col_def")
+    expr <- attr(dots[[nm]], "reactibble_col_def")
     col <- .subset2(x, nm)
     if (is.null(expr)) {
-      col <- strip_reactive_col(col)
+      if (is_reactive_col(col)) col <- vec_data(col)
     } else {
-      col <- as_reactive_col(col, expr)
+      col <- reactive_col(col, expr)
     }
     col
   })

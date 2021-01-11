@@ -79,8 +79,8 @@ with.reactibble <- function (data, expr, ...) {
   args <- setNames(lapply(value, as.symbol), names(x))
   for (i in seq_along(x)) {
     if(inherits(x[[i]], "reactive_col")) {
-      attr(x[[i]], "reactible_col_def") <-
-        do.call(substitute, c(list(attr(x[[i]], "reactible_col_def"), args)))
+      attr(x[[i]], "reactibble_col_def") <-
+        do.call(substitute, c(list(attr(x[[i]], "reactibble_col_def"), args)))
     }
   }
   names(x) <- value
@@ -137,43 +137,27 @@ with.reactibble <- function (data, expr, ...) {
   strip_reactive_col(.subset2(x, ...))
 }
 
-# This is necessary for binding functions
-# binding is only allowed between reactive columns of the same formula and
-# NAs (which are implicitly added when rowbinding)
-
-#' @export
-c.reactive_col <- function(...) {
-  dots <- list(...)
-  expr <- attr(..1, "reactible_col_def")
-  all_na <- all(sapply(dots[-1], is.na))
-  if(all_na) {
-    res <- NA
-    attr(res, "reactible_col_def") <- expr
-    return(res)
-  }
-  all_rc <- all(sapply(dots[-1], inherits, "reactive_col"))
-  if(!all_rc)
-    stop("Tried to bind a `reactive_col` with an incompatible data type")
-  unique_expr <- length(unique(lapply(dots, attr, "reactible_col_def"))) == 1
-  if(!unique_expr)
-    stop("Tried to bind `reactive_col` objects with incompatible column definitions")
-  res <- NextMethod()
-  attr(res, "reactible_col_def") <- expr
-  res
-}
-
 # This is necessary so dplyr::bind_rows reconstruct the reactibble and refreshes
 # it right
 
 #' @export
-dplyr_reconstruct.reactibble <- function (data, template)
-{
-  data   <- NextMethod()
-  data[] <- Map(function(x,y) {
-    attributes(x) <- y
+dplyr_reconstruct.reactibble <- function (data, template) {
+  # insert here a warning and suggest to use `rt_bind_rows` for more efficiency and robustness
+
+  # hack to retrieve attributes from all tables, might break if dplyr's code changes
+  dots <- get("dots", parent.frame(2))
+  reactive_col_attrs <- unlist(lapply(dots, function(x) {
+    lapply(x, attr, "reactibble_col_def")
+  }), FALSE)
+
+  reactive_col_attrs <- reactive_col_attrs[!duplicated(names(reactive_col_attrs))]
+  nms <- names(reactive_col_attrs)
+  data[] <- Map(function(x, y) {
+    attr(x, "reactibble_col_def") <- y
     x
-  }, data, lapply(template, attributes))
-  data
+    }, data, reactive_col_attrs)
+  class(data) <- class(template)
+  refresh(data)
 }
 
 #' @export
@@ -183,9 +167,9 @@ rbind.reactibble <- function(..., deparse.level = 1) {
   dots <- list(...)
   rcs <- sapply(dots[[1]], inherits, "reactive_col")
   nms <- names(which(rcs))
-  exprs1 <- sapply(.subset(dots[[1]], nms), attr, "reactible_col_def")
+  exprs1 <- sapply(.subset(dots[[1]], nms), attr, "reactibble_col_def")
   for(input in dots[-1]) {
-    exprs <- sapply(.subset(input, nms), attr, "reactible_col_def")
+    exprs <- sapply(.subset(input, nms), attr, "reactibble_col_def")
     if(!identical(exprs, exprs1))
       stop("Tried to bind a `reactive_col` to an incompatible object.")
   }

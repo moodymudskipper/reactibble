@@ -35,14 +35,6 @@ tbl_sum.reactibble <- function (x){
   setNames(paste(nrow(x), "x", ncol(x)), paste("A", f("reactibble")))
 }
 
-#' methods
-#'
-#' @inheritParams vctrs::vec_ptype_abbr
-#' @export
-#' @rdname methods
-vec_ptype_abbr.reactive_col <- function(x) {
-  paste0("~", pillar::type_sum(strip_reactive_col(x)))
-}
 
 #' @inheritParams pillar::pillar_shaft
 #' @export
