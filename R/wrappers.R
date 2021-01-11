@@ -157,7 +157,10 @@ dplyr_reconstruct.reactibble <- function (data, template) {
     x
     }, data, reactive_col_attrs)
   class(data) <- class(template)
-  refresh(data)
+  if(getOption("reactibble.autorefresh")) {
+    data <- refresh(data)
+  }
+  data
 }
 
 #' @export
@@ -173,5 +176,9 @@ rbind.reactibble <- function(..., deparse.level = 1) {
     if(!identical(exprs, exprs1))
       stop("Tried to bind a `reactive_col` to an incompatible object.")
   }
-  refresh(data)
+  if(getOption("reactibble.autorefresh")) {
+    data <- refresh(data)
+  }
+  data
 }
+
