@@ -50,6 +50,10 @@ refresh.data.frame <- function(x) {
   x
 }
 
+refresh_if_relevant <- function(data) {
+if(getOption("reactibble.autorefresh")) refresh(data) else data
+}
+
 #' @export
 refresh.reactibble <- function(x) {
   cl <- class(x)
