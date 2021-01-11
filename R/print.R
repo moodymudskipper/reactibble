@@ -42,7 +42,7 @@ tbl_sum.reactibble <- function (x){
 pillar_shaft.reactive_col <- function(x, ...) {
   printing_tibble <-
     list(quote(print.tbl(x))) %in% as.list(sys.calls())
-  if(printing_tibble & getOption("reactibble.autorefresh")) {
+  if(printing_tibble && getOption("reactibble.autorefresh")) {
     pillar::new_pillar_shaft(
       rep_len("unsynced!!!", length(x)),
       class = "pillar_shaft_unsynced",
