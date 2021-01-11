@@ -27,6 +27,7 @@ Imports:
     vctrs,
     cli
 Suggests:
-    data.table
+    data.table,
+    testthat
 URL: https://github.com/moodymudskipper/reactibble
 BugReports: https://github.com/moodymudskipper/reactibble/issues
