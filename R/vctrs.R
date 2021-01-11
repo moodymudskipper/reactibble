@@ -58,6 +58,8 @@ vec_math.reactive_col <- function(.fn, .x, ...) {
 # proxy methods
 
 # I give up
+
+#' @export
 Ops.reactive_col <- function(e1, e2 = NULL) {
   if(is_reactive_col(e1)) e1 <- vec_data(e1)
   if(is_reactive_col(e2)) e2 <- vec_data(e2)
