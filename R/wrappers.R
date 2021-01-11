@@ -142,8 +142,6 @@ with.reactibble <- function (data, expr, ...) {
 
 #' @export
 dplyr_reconstruct.reactibble <- function (data, template) {
-  # insert here a warning and suggest to use `rt_bind_rows` for more efficiency and robustness
-
   # hack to retrieve attributes from all tables, might break if dplyr's code changes
   dots <- get("dots", parent.frame(2))
   reactive_col_attrs <- unlist(lapply(dots, function(x) {
@@ -192,6 +190,43 @@ slice.reactibble <- function(.data, ..., .preserve = FALSE) {
     x
   }, .data, attrs)
   class(.data) <- cl
+  if(getOption("reactibble.autorefresh")) {
+    .data <- refresh(.data)
+  }
+  .data
+}
+
+#' Efficiently bind multiple data frames by row and column
+#'
+#'  Counterpart of `dplyr::bind_rows` that works efficiently on *"reactibble"*
+#'  objects. While `bind_rows()` can be used on "reactibbles" (at time of writing),
+#'  it is brittle and inefficient, as it triggers more refreshes than necessary.
+#'
+#' @inheritParams dplyr::bind_rows
+#'
+#' @export
+rt_bind_rows <- function(..., .id = NULL) {
+  dots <- lapply(list(...), tibble::as_tibble)
+  data <- dplyr::bind_rows(!!!dots, .id = .id)
+  data <- as_reactibble(data)
+  if(getOption("reactibble.autorefresh")) {
+    data <- refresh(data)
+  }
+  data
+}
+
+#' Add rows to a reactibble
+#'
+#'  Counterpart of `tibble::add_row` that works efficiently on *"reactibble"*
+#'  objects. Beware of using `add_row()` instead as it would return an out of sync `reactibble`
+#'
+#' @inheritParams tibble::add_row
+#'
+#' @export
+rt_add_row <- function(.data, ..., .before = NULL, .after = NULL) {
+  .data <- tibble::as_tibble(.data)
+  .data <- tibble::add_row(.data, ..., .before = NULL, .after = NULL)
+  .data <- as_reactibble(.data)
   if(getOption("reactibble.autorefresh")) {
     .data <- refresh(.data)
   }
