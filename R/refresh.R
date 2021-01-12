@@ -6,6 +6,7 @@ refresh <- function(x) {
   UseMethod("refresh", x)
 }
 
+#' @importFrom stats na.omit
 #' @export
 refresh.data.frame <- function(x) {
   if(!nrow(x)) return(x)

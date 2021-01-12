@@ -20,6 +20,8 @@ process_reactive_dots <- function(...) {
 }
 
 setup_memoise_env <- function(expr, env) {
+  # for notes
+  ..memoised_funs.. <- NULL
   M_inputs <- list()
   recurse <- function(expr) {
     if(!is.call(expr))

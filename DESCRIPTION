@@ -25,7 +25,9 @@ Imports:
     rlang,
     pillar,
     vctrs,
-    cli
+    cli,
+    crayon,
+    memoise
 Suggests:
     data.table,
     testthat

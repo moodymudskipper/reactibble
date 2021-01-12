@@ -132,6 +132,9 @@ with.reactibble <- function (data, expr, ...) {
 # it right
 
 #' @export
+#' @param template template
+#' @param data data
+#' @rdname dplyr_methods
 dplyr_reconstruct.reactibble <- function (data, template) {
   # hack to retrieve attributes from all tables, might break if dplyr's code changes
   dots <- get("dots", parent.frame(2))
@@ -178,7 +181,10 @@ cbind.reactibble <- function(..., deparse.level = 1) {
   refresh_if_relevant(data)
 }
 
+
 #' @export
+#' @inheritParams dplyr::slice
+#' @rdname dplyr_methods
 slice.reactibble <- function(.data, ..., .preserve = FALSE) {
   cl <- class(.data)
   attrs <- lapply(.data, attr, "reactibble_col_def")

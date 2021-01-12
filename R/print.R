@@ -27,18 +27,19 @@ as_reactibble0 <- function(x) {
   x
 }
 
+#' tibble methods
 #' @inheritParams tibble::tbl_sum
 #' @export
-#' @rdname methods
+#' @name tibble_methods
 tbl_sum.reactibble <- function (x){
   f <- getOption("reactibble.highlight") %||% c
   setNames(paste(nrow(x), "x", ncol(x)), paste("A", f("reactibble")))
 }
 
-
+#' pillar methods
 #' @inheritParams pillar::pillar_shaft
 #' @export
-#' @rdname methods
+#' @name pillar_methods
 pillar_shaft.reactive_col <- function(x, ...) {
   printing_tibble <-
     list(quote(print.tbl(x))) %in% as.list(sys.calls())
@@ -57,9 +58,7 @@ pillar_shaft.reactive_col <- function(x, ...) {
   }
 }
 
-#' @inheritParams base::format
 #' @export
-#' @rdname methods
 format.pillar_shaft_reactive_col<- function(x, ...) {
   f <- getOption("reactibble.highlight") %||% c
   # apply format method for original class
@@ -73,9 +72,7 @@ format.pillar_shaft_reactive_col<- function(x, ...) {
   fmt
 }
 
-#' @inheritParams base::format
 #' @export
-#' @rdname methods
 format.pillar_shaft_unsynced <- function(x, ...) {
   format(crayon::red(x))
 }

@@ -33,7 +33,11 @@ check_join_by_arg <- function(x, y, by) {
   }
 }
 
+#' dplyr methods
 #' @export
+#' @inheritParams dplyr::left_join
+#' @inheritParams dplyr::nest_join
+#' @name dplyr_methods
 left_join.reactibble <- function (
   x, y, by = NULL, copy = FALSE, suffix = c(".x",  ".y"), ..., keep = FALSE) {
   check_join_by_arg(x, y, by)
@@ -42,6 +46,7 @@ left_join.reactibble <- function (
 }
 
 #' @export
+#' @rdname dplyr_methods
 right_join.reactibble <- function (
   x, y, by = NULL, copy = FALSE, suffix = c(".x",  ".y"), ..., keep = FALSE) {
   check_join_by_arg(x, y, by)
@@ -50,6 +55,7 @@ right_join.reactibble <- function (
 }
 
 #' @export
+#' @rdname dplyr_methods
 inner_join.reactibble <- function (
   x, y, by = NULL, copy = FALSE, suffix = c(".x",  ".y"), ..., keep = FALSE) {
   check_join_by_arg(x, y, by)
@@ -58,6 +64,7 @@ inner_join.reactibble <- function (
 }
 
 #' @export
+#' @rdname dplyr_methods
 full_join.reactibble <- function (
   x, y, by = NULL, copy = FALSE, suffix = c(".x",  ".y"), ..., keep = FALSE) {
   check_join_by_arg(x, y, by)
@@ -66,6 +73,7 @@ full_join.reactibble <- function (
 }
 
 #' @export
+#' @rdname dplyr_methods
 anti_join.reactibble <- function (
   x, y, by = NULL, copy = FALSE, ...) {
   check_join_by_arg(x, y, by)
@@ -74,6 +82,7 @@ anti_join.reactibble <- function (
 }
 
 #' @export
+#' @rdname dplyr_methods
 semi_join.reactibble <- function (
   x, y, by = NULL, copy = FALSE, ...) {
   check_join_by_arg(x, y, by)
@@ -82,6 +91,7 @@ semi_join.reactibble <- function (
 }
 
 #' @export
+#' @rdname dplyr_methods
 nest_join.reactibble <- function (
   x, y, by = NULL, copy = FALSE, keep = FALSE, name = NULL, ...) {
   check_join_by_arg(x, y, by)
