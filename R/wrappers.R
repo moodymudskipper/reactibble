@@ -151,6 +151,9 @@ dplyr_reconstruct.reactibble <- function (data, template) {
 
 #' @export
 rbind.reactibble <- function(..., deparse.level = 1) {
+  warning(
+    "Using `rbind()` on a 'reactibble' object is discouraged and ",
+    "potentially unsafe, use `rt_bind_rows` instead")
   data <- rbind.data.frame(..., deparse.level = 1)
   # the main method does checks already so we do our checks
   dots <- list(...)
@@ -162,6 +165,16 @@ rbind.reactibble <- function(..., deparse.level = 1) {
     if(!identical(exprs, exprs1))
       stop("Tried to bind a `reactive_col` to an incompatible object.")
   }
+  refresh_if_relevant(data)
+}
+
+#' @export
+cbind.reactibble <- function(..., deparse.level = 1) {
+  warning(
+    "Using `cbind()` on a 'reactibble' object is discouraged and ",
+    "potentially unsafe, use `rt_bind_cols` instead")
+  data <- cbind.data.frame(..., deparse.level = 1)
+  data <- as_reactibble(data)
   refresh_if_relevant(data)
 }
 
@@ -190,6 +203,22 @@ slice.reactibble <- function(.data, ..., .preserve = FALSE) {
 rt_bind_rows <- function(..., .id = NULL) {
   dots <- lapply(list(...), tibble::as_tibble)
   data <- dplyr::bind_rows(!!!dots, .id = .id)
+  data <- as_reactibble(data)
+  refresh_if_relevant(data)
+}
+
+#' Efficiently bind multiple data frames by row and column
+#'
+#'  Counterpart of `dplyr::bind_cols` that works efficiently on *"reactibble"*
+#'  objects. `bind_cols()` will fail "reactibbles" so this new function was
+#'  required..
+#'
+#' @inheritParams dplyr::bind_cols
+#'
+#' @export
+rt_bind_cols <- function(..., .id = NULL) {
+  dots <- lapply(list(...), tibble::as_tibble)
+  data <- dplyr::bind_cols(!!!dots, .id = .id)
   data <- as_reactibble(data)
   refresh_if_relevant(data)
 }
