@@ -43,10 +43,11 @@ pillar_shaft.reactive_col <- function(x, ...) {
   printing_tibble <-
     list(quote(print.tbl(x))) %in% as.list(sys.calls())
   if(printing_tibble && getOption("reactibble.autorefresh")) {
+    placeholder <- "unsynced!!!"
     pillar::new_pillar_shaft(
-      rep_len("unsynced!!!", length(x)),
+      rep_len(placeholder, length(x)),
       class = "pillar_shaft_unsynced",
-      align = "left", na_indent = 5, width = 5)
+      align = "left", na_indent = 5, width = nchar(placeholder))
   } else {
   # create the pillar from the original class
   shaft <- pillar::pillar_shaft(strip_reactive_col(x), ...)
