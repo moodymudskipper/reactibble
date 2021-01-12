@@ -4,14 +4,46 @@ process_reactive_dots <- function(...) {
     expr <- rlang::quo_get_expr(x)
     expr_is_reactive <- is.call(expr) && identical(expr[[1]], quote(`~`))
     if(expr_is_reactive) {
+      env <- attr(x, ".Environment")
+      # check if we find a call to M
+      expr_uses_M <- "M" %in% setdiff(all.names(expr), all.vars(expr))
+      if(expr_uses_M) {
+        env <- setup_memoise_env(expr, env)
+      }
       x <- reactive_col(NA, list(
         expr = expr[[2]],
-        env = attr(x, ".Environment")
+        env = env
         ))
     }
     x
   })
 }
+
+setup_memoise_env <- function(expr, env) {
+  M_inputs <- list()
+  recurse <- function(expr) {
+    if(!is.call(expr))
+      return(invisible(NULL))
+    if(identical(expr[[1]], quote(M)))
+      M_inputs <<- c(M_inputs, expr[[2]])
+    else
+      lapply(expr, recurse)
+    invisible(NULL)
+  }
+  lapply(expr[[2]], recurse)
+  # wrap in memoise
+  M_inputs_m <- lapply(M_inputs, function(x) as.call(c(quote(memoise::memoise), x)))
+  memoised_funs <- lapply(M_inputs_m, eval, env)
+  names(memoised_funs) <- sapply(M_inputs, deparse1)
+  # reinitiate our environment as a chiled of the quosure env
+  env <- new.env(parent = env)
+  # store memoised functions and M
+  env$..memoised_funs.. <- memoised_funs
+  env$M <- function(x) ..memoised_funs..[[deparse1(substitute(x))]]
+  environment(env$M) <- env
+  env
+}
+
 
 process_reactive_output <- function(x, dots) {
   # keep last definition of all modified/created vars

@@ -27,4 +27,5 @@
 * Implemented `rt_bind_rows` and `rt_add_row` as robust and efficient counterparts
  of `dplyr::bind_rows` and `tibble::add_row`, which we can unfortunately not use
  on reactibbles reliably.
+* Implemented easy way to memoise, by using M() in the reactive col definition
   
