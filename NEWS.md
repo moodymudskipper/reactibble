@@ -12,19 +12,22 @@
 * Refreshing occurs in the correct order
 * Dynamic columns now print in cyan, or in a custom color
 * Reactibble object can contain list columns
-* `transform.reactibble` triggers a warnings and returns a static data.frame
+* `transform.reactibble` triggers a warnings and returns a static native 
+  data.frame, consistently with how `base::transform` treat tibbles.
 * `within.reactibble` warns that it might be unsafe
 * `with.reactibble` is defined, only to make sure we don't return a "reactive_col" object
 * Implemented methods for {dplyr} join functions and base::merge
 * Optimized print so it doesn't refresh
 * When printing a tibble and the "reactibble.autorefresh" option is `TRUE` mark
   columns as "unsynced" colored in red.
-* Optimize process_reactive_dots so reactive columns are coomputed only in the end
+* Optimize process_reactive_dots so reactive columns are computed only in the end
 * Use quosures instead of expressions as column definitions
-* Implemented temporary solution to rbind and bind_rows using vctrs
+* The reactive column is a *{vctrs}* object.
 * Defined a method for `dplyr::slice`
 * Added tests
 * Implemented `rt_bind_rows`, `rt_bind_cols` and `rt_add_row` as robust and efficient counterparts
  of `dplyr::bind_rows`, `dplyr::bind_cols` and `tibble::add_row`, which we can unfortunately not use
  on reactibbles reliably.
+* `rbind.reactibble` and `cbind.reactibble` warn that using the above is preferable,
+ though they  work.
 * Implemented easy way to memoise, by using M() in the reactive col definition
