@@ -1,15 +1,40 @@
 
 # reactibble
 
-IN PROGRESS
+IN PROGRESS\!
 
-Reactive columns for data frames\!
+*{reactibble}* implements reactive columns in data frames.
 
-Original twitter thread here :
-<https://twitter.com/antoine_fabri/status/1346421382981283840>
+We build them using the `reactibble()` function, and define reactive
+columns using formulas.
 
-New thread:
-<https://twitter.com/antoine_fabri/status/1346839934783643652>
+``` r
+library(reactibble)
+rt <- reactibble(
+  height = c(1.50, 1.72),
+  weight = c(70, 82),
+  bmi = ~ weight / height^2
+)
+```
+
+![](tools/intro1.png)
+
+As you can see, the reactive columns are displayed in a different color,
+and the type of the column is prefixed with `"~"`.
+
+Then whenever we change a value, the reactive column is updated.
+
+``` r
+rt$height[1] <- 1.80
+```
+
+![](tools/intro2.png)
+
+It is reminescent database views, excel calculated columns or reactive
+DataTables in `{shiny}`.
+
+The package provides functions and methods to modify the data and ease
+memoisation of operations.
 
 ## Installation
 
@@ -19,116 +44,182 @@ Install with:
 remotes::install_github("moodymudskipper/reactibble")
 ```
 
-## Example
+## Modify the data
 
-`reactibble()` works like `tibble()` except we can define reactive
-columns by using `~`:
-
-``` r
-library(reactibble)
-rt <- reactibble(
-  height = c(150, 172, 164),
-  weight = c(7, 82, 68),
-  bmi = ~ weight / height^2
-)
-rt
-#> # A reactibble: 3 x 3
-#>   height weight      bmi
-#>    <dbl>  <dbl>   <~dbl>
-#> 1    150      7 0.000311
-#> 2    172     82 0.00277 
-#> 3    164     68 0.00253
-```
-
-Oops, height was in the wrong unit, we correct it, bmi is corrected as
-well:
-
-``` r
-# the following all work and are equivalent
-rt[[1]] <- runif(3, 1.5, 2)
-rt
-#> # A reactibble: 3 x 3
-#>   height weight    bmi
-#>    <dbl>  <dbl> <~dbl>
-#> 1   1.63      7   2.63
-#> 2   1.69     82  28.8 
-#> 3   1.79     68  21.3
-
-rt[1] <- runif(3, 1.5, 2)
-rt
-#> # A reactibble: 3 x 3
-#>   height weight    bmi
-#>    <dbl>  <dbl> <~dbl>
-#> 1   1.95      7   1.83
-#> 2   1.60     82  32.0 
-#> 3   1.95     68  17.9
-
-rt$height <- runif(3, 1.5, 2)
-rt
-#> # A reactibble: 3 x 3
-#>   height weight    bmi
-#>    <dbl>  <dbl> <~dbl>
-#> 1   1.97      7   1.80
-#> 2   1.83     82  24.5 
-#> 3   1.81     68  20.7
-
-rt <- within(rt, height <- runif(3, 1.5, 2))
-rt
-#> # A reactibble: 3 x 3
-#>   height weight    bmi
-#>    <dbl>  <dbl> <~dbl>
-#> 1   1.53      7   2.99
-#> 2   1.60     82  31.9 
-#> 3   1.59     68  27.0
-```
-
-Note that reactive columns are shown in cyan (not in rendered output,
-such as this document).
-
-This is configurable via the option “reactibble.highlight”. Set to
-another *{crayon}* function to change the style.
-
-![](tools/rstudio.png)
-
-``` r
-options(reactibble.highlight = crayon::yellow)
-rt
-#> # A reactibble: 3 x 3
-#>   height weight    bmi
-#>    <dbl>  <dbl> <~dbl>
-#> 1   1.53      7   2.99
-#> 2   1.60     82  31.9 
-#> 3   1.59     68  27.0
-```
-
-Set this option to `NULL` to disable highlighting of reactive columns.
-
-We can add other reactive columns by using `mutate.reactibble` (or just
-`mutate` if *{dplyr}* is attached) with `~` : attach :
+You can add or modify columns using *{dplyr}* functions `mutate()` and
+`transmute()`, use a formula if you wish to add a new reactive column.
+Building on our example above :
 
 ``` r
 library(dplyr, warn.conflicts = FALSE)
-mutate(
-  rt, 
-  height_cm = ~ 100 * height, 
-  height = runif(3, 1.5, 2)
-  )
+rt <- mutate(rt, height_cm = ~ height * 100)
+rt
+#> # A reactibble: 2 x 4
+#>   height weight    bmi height_cm
+#>    <dbl>  <dbl> <~dbl>    <~dbl>
+#> 1   1.8      70   21.6       180
+#> 2   1.72     82   27.7       172
+```
+
+To add rows we can use the functions `rt_bind_rows()` or `rt_add_row()`,
+counterpart to `dplyr::bind_rows()` and `tibble::add_row()` which
+unfortunately don’t work reliably on `"reactibble"` objects.
+
+``` r
+rt <- rt_add_row(rt, height = 1.64, weight = 68)
+rt
 #> # A reactibble: 3 x 4
 #>   height weight    bmi height_cm
 #>    <dbl>  <dbl> <~dbl>    <~dbl>
-#> 1   1.84      7   2.06      184.
-#> 2   1.69     82  28.6       169.
-#> 3   1.88     68  19.1       188.
+#> 1   1.8      70   21.6       180
+#> 2   1.72     82   27.7       172
+#> 3   1.64     68   25.3       164
 ```
 
-## Notes
+To get a static object (still of class reactibble), call `materialize()`
 
-  - If for some reason a reactibble is out of sync, call `rt <-
-    refresh(rt)` (and post an issue :)).
-  - If you want to disable autorefresh, maybe because your columns are
-    expensive to recompute, set `options(reactibble.autorefresh =
-    FALSE)`.
-  - At the moment (and maybe forever), only `mutate` can create new
-    reactive columns, so you can’t do things like `rt$var <- ~ expr`.
-  - Dropping a column used by a formula triggers an explicit error
-  - Renaming a column updates the formulas so they use the new name
+``` r
+materialize(rt)
+#> # A reactibble: 3 x 4
+#>   height weight   bmi height_cm
+#>    <dbl>  <dbl> <dbl>     <dbl>
+#> 1   1.8      70  21.6       180
+#> 2   1.72     82  27.7       172
+#> 3   1.64     68  25.3       164
+```
+
+We implemented methods for *{dplyr}*’s join functions so that they
+should work seamlessly on `"reactibble"` reactibble objects, provided
+the first argument is a `"reactibble"`.
+
+Renaming, selecting, dropping columns, slicing, will work seamlessly
+with the method of your choice. In case of renaming the formula of the
+reactive columns will adapt to the new names, and if a necessary column
+is dropped an explicit error will be triggered.
+
+Some functions outside of this package will work well natively on
+*{reactibble}*, such as `base::split()`, others will warn, such as
+`base::transform()`, while others might unfortunately strip off the
+class or attributes silently, or put the reactibble out of sync.
+
+We hope through time to provide methods for most generics posing
+problems, and `rt_*` alternatives for other problematic functions, if
+you want to help, ![the issues are
+open\!](https://github.com/moodymudskipper/reactibble/issues)
+
+## Refreshing
+
+The columns of a `"reactibble"` object are recomputed anytime the object
+is modified. In some cases this can be costly in terms of resources, we
+can deal with this either by memoising the columns (next section) or
+enabling manual refresh (present section).
+
+We can disable the autorefresh, do the transformation we need with the
+latest computed values, and refresh once we’re done.
+
+``` r
+options(reactibble.autorefresh = FALSE)
+rt <- mutate(rt, weight_g = ~weight * 1000)
+# not yet refreshed 
+rt
+#> # A reactibble: 3 x 5
+#>   height weight    bmi height_cm weight_g
+#>    <dbl>  <dbl> <~dbl>    <~dbl> <~lgl>  
+#> 1   1.8      70   21.6       180 NA      
+#> 2   1.72     82   27.7       172 NA      
+#> 3   1.64     68   25.3       164 NA
+# now refreshed
+rt <- refresh(rt)
+rt
+#> # A reactibble: 3 x 5
+#>   height weight    bmi height_cm weight_g
+#>    <dbl>  <dbl> <~dbl>    <~dbl>   <~dbl>
+#> 1   1.8      70   21.6       180    70000
+#> 2   1.72     82   27.7       172    82000
+#> 3   1.64     68   25.3       164    68000
+# go back to default
+options(reactibble.autorefresh = TRUE)
+```
+
+## Memoise
+
+The other, arguably more convenient way to deal with redundant
+computations is to memoise them. For this we implemented a handy feature
+that wraps the *{memoise}* package which ![provides such a
+functionality](http://memoise.r-lib.org/).
+
+Wrap the function that you want to memoise in `M()` and whenever its fed
+the same input when refreshing the column, it will retrieve the result
+in memory.
+
+See example below where we memoise respectively the full column and
+rowwise results.
+
+### Full column memoisation
+
+``` r
+slow_mean <- function(...) {
+  Sys.sleep(1)
+  mean(c(...))
+}
+
+# the function is run the first time, taking one second
+system.time(
+  rt <- reactibble(a=1:3, b = ~ M(slow_mean)(a))
+)
+#>    user  system elapsed 
+#>    0.00    0.02    1.05
+rt
+#> # A reactibble: 3 x 2
+#>       a      b
+#>   <int> <~dbl>
+#> 1     1      2
+#> 2     2      2
+#> 3     3      2
+
+# If we transform the data without affecting b, we use results stored in
+# memory, saving resources
+system.time(
+  rt <- mutate(rt, c = ~ b * 2)
+)
+#>    user  system elapsed 
+#>    0.05    0.00    0.04
+```
+
+### Rowwise memoisation
+
+We can memoise rowwise computations that wrapping the call in an apply
+function (`lapply()`, `sapply()`, `mapply()`, `Map()`, or functions from
+the `purrr::map*()` family)
+
+``` r
+# the function is executed 3 times, takes 3 seconds
+system.time(
+  rt <- reactibble(a=1:3, b = 2:4, c = ~ mapply(M(slow_mean),a, b))
+)
+#>    user  system elapsed 
+#>    0.02    0.00    3.14
+rt
+#> # A reactibble: 3 x 3
+#>       a     b      c
+#>   <int> <int> <~dbl>
+#> 1     1     2    1.5
+#> 2     2     3    2.5
+#> 3     3     4    3.5
+
+# if we add a single row, it will take only one more second to update
+system.time(
+  # careful not to change the type from integer to double!
+  rt <- rt_add_row(rt, a=4L, b = 5L) 
+)
+#>    user  system elapsed 
+#>    0.00    0.00    1.07
+rt
+#> # A reactibble: 4 x 3
+#>       a     b      c
+#>   <int> <int> <~dbl>
+#> 1     1     2    1.5
+#> 2     2     3    2.5
+#> 3     3     4    3.5
+#> 4     4     5    4.5
+```
